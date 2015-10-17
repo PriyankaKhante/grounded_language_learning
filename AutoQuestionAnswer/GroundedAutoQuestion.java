@@ -1,3 +1,8 @@
+import java.util.StringTokenizer;
+import java.util.HashMap;
+import java.io.BufferedReader;
+
+
 /* This class uses cluster data as input to facilitate automated question answering
  * A provided grounded truth table will allow for lookups for a corresponding question
  *
@@ -10,13 +15,58 @@
 
 public class GroundedAutoQuestion {
 
+	public static void main(String[] args) {
+
+	}
+
+
+	/*
+	 * Outputs a convoluted table in hashmaps after the input of the grounded truth.
+	 * Maps: obj_name -> attribute_name (eg color) -> value
+	 * The following attributes have numerical output: height weight and width
+	 */
+	HashMap<String, HashMap<String, String> > loadGroundTruthTable(){
+		BufferedReader in = new BufferedReader(new FileReader("etc/groundedtruetable.csv"));
+		String attributes[] = new String[8];
+		//grab all the attribute names. Note that these should match that is output
+		//by the modified weca program
+		if(in.hasNextLine()){
+			String line = in.readLine();
+			StringTokenizer tokenizer = new StringTokenizer(line,",");
+			int columnNum = 1;
+
+			while (tokenizer.hasMoreTokens()){
+				attributes[columnNum] = tokenizer.nextToken();
+				columnNum++;
+			}
+		}
+		HashMap<String, HashMap<String, String> > groundTruthTable = new HashMap<String, HashMap<String, String> >();
+		//build the rest of the table
+		while(in.hasNextLine()){
+			String line = in.readLine();
+			StringTokenizer tokenizer = new StringTokenizer(line,","); 
+			int columnNum = 0;
+			HashMap<String,String> objectTruthTable = new HashMap<String,String>();
+
+			String name = tokenizer.nextToken();
+			while (tokenizer.hasMoreTokens()){ 
+				objectTruthTable.put(attributes[columnNum], tokenizer.nextToken());
+				columnNum++;
+			}
+			groundTruthTable.put(name,objectTruthTable);
+		}
+
+		in.close();
+		return groundTruthTable;
+	}
+
 	void sequence(){
+
 		while(!responseFileExists()){		//wait for Java to respond with updated cluster
 			sleep(.01);
 		}
 		readResponseFile();
 		std::string att_from_above;
-		boost::thread workerThread(writeToScreen, &cur_cluster, &safe_access);
 		bool req_sent = false;
 		while(true){
 			if(firstTime){
@@ -137,7 +187,4 @@ public class GroundedAutoQuestion {
 	}
 
 
-	public static void main(String[] args) {
-
-	}
 }
