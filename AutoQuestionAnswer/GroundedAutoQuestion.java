@@ -210,45 +210,44 @@ public class GroundedAutoQuestion {
 		readResponseFile();
 		String att_from_above;
 		boolean req_sent = false;
+		HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
+		Pair<String, String> curContextPair = null;
+		ArrayList<Triple> values = null;
+
 		while(true){
 			if(firstTime){
 				firstTime = false;
 				String modality_copy = modality;
-				String delimiter = "_";
-				int index = modality_copy.find(delimiter);
-				String action = modality_copy.substr(0, index);
-				String modality = modality_copy.substr(index+1, modality_copy.length());
-				String resp = ask_free_resp("Please specify what general attribute is described by " + action +"ing the object while recording the " + modality);
-				//std::vector<std::string> feature_vec = splitString(resp);
+				values = labelTable.get(curContextPair);
+
+				//String delimiter = "_";
+				//int index = modality_copy.find(delimiter);
+				//String action = modality_copy.substr(0, index);
+				//String modality = modality_copy.substr(index+1, modality_copy.length());
+				String resp = ask_free_resp("Please specify what general attribute is described by "+ modality);
 				ArrayList<String> feature_vec = splitString(resp);
 
+				/*
+				 *got modality and attribute. make a pair and begin gathering labels.
+				 */
+				curContextPair = Pair.createPair(modality,feature_vec.at(0));
 
 				clusterAttribute = feature_vec.at(0);
 			}
 			boolean common_att = ask_mult_choice("Are all of these objects similar in " + clusterAttribute + "?", "No", "Yes");
 			if(common_att){ //user input 'Yes' to "Any attributes common to all objects?"
-				//ask only once per tree : "Can you specify that attribute?"
-					std::map<std::string, std::vector<std::string> >::iterator it;
-					it = label_table.find(clusterAttribute);
 
+					//if context and general attribute are not exclusive, should break it apart like below
+					//otherwise there can only be one attribute that matches, which has to exist because its whats being analyzed in the current
+					//cycle.
 					if(it != label_table.end()){
-						std::vector<std::string> values = it->second;
-						std::vector<std::string> values_buffer; //used to track new labels to be added to values
 						bool done = false;
-						/*for(int j = 0; j < values.size() && !done; j++){
-							int mult_choice_ans = ask_mult_choice("Are they " + values.at(j) + " in " + clusterAttribute + "?",
-									"No", "Yes");
-							if(mult_choice_ans){
-								values_buffer.push_back(values.at(j));
-								done = true;
-							}
-						}*/
 						if(!done){
-						att_from_above = ask_free_resp("What/how " + clusterAttribute + " are they?");
-						values.push_back(att_from_above);
-						label_table[clusterAttribute] = values;
-						//label_table.insert(std::pair<std::string,std::vector<std::string> >(feature_vec.at(i),
-						//		values));	
+							att_from_above = ask_free_resp("What/how " + clusterAttribute + " are they?");
+							//issue here. labelTriple is fine but labelTable expects a mapping to an arraylist of entries.
+							//should probably just add labelTriple to an arraylist and add mapping once questions are over for this modality
+							Triple labelTriple = Triple.createTriple(att_from_above, cur_cluster, questions_asked);
+							labelTable.put(curContextPair,labelTriple);
 						}
 					}
 					else {
@@ -276,42 +275,56 @@ public class GroundedAutoQuestion {
 							cur_cluster.clear();
 							cur_cluster.add(outlier_name);
 							
-							//display only outliers.at(i);
 							String answer = ask_free_resp("What is the " + clusterAttribute + " of this object?");
+
 							//store answer as label
-							//store in outlier map to be combined to any cluster with the same label
-							writeRequestFile(0,outlier_name,answer);	//send request to Java prog
-							while(!responseFileExists()){		//wait for Java to respond with updated cluster
+							for(int i = 0; i < values.size(); i++){
+								if(values.at(i).getLabel().equals(answer)){ 	//label exists in table. Add it to list of objects
+									Triple temp = values.remove(i);				//must remove element, to update it, then add it back
+									ArrayList<String> objects = temp.getObjects();
+									objects.add(outlier_name);
+									Triple update = Triple.createTriple(temp.getLabel(),objects,temp.getQuestionNum());
+									values.add(update);							//finally add back the updated triple
+								}
+							}
+
+							writeRequestFile(0,outlier_name,answer);			//send request to Java prog
+							while(!responseFileExists()){						//wait for Java to respond with updated cluster
 								sleep(.01);
 							}
 							readResponseFile();
-							sleep(1); //waits for the cv window to update
+							sleep(1); 											//waits for the cv window to update
 						}
 						/* Here I need to grab the label for the attribute. Need to check label table for:
 						 * the existance of the attribute. If it exists, add the label to the vector of labels already seen
 						 * Otherwise, add an entry pair <feature, vec:labels>
 						 */ 
 						att_from_above = ask_free_resp("What " + clusterAttribute + " are these items?");
-						std::map<std::string, std::vector<std::string> >::iterator it;
-						it = label_table.find(clusterAttribute);
-						if(it != label_table.end()){ //att exists
-							std::vector<std::string> values = it->second;
-							values.push_back(att_from_above);
-							label_table[clusterAttribute] = values;
+						boolean extant = false;
+						//store answer as label
+						ArrayList<Triple> values = labelTable.get(curContextPair);
+						for(int i = 0; i < values.size() & !extant; i++){
+							if(values.at(i).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
+								Triple temp = values.remove(i);					//must remove element, to update it, then add it back
+								ArrayList<String> objects = temp.getObjects();
+								objects.add(outlier_name);
+								Triple update = Triple.createTriple(temp.getLabel(),objects,temp.getQuestionNum());
+								values.add(update);								//finally add back the updated triple
+								extant = true;
+							}
 						}
-						else{ //doesn't exist
-							label_table.insert(std::pair<std::string,std::vector<std::string> >(clusterAttribute,
-									splitString(att_from_above)));
+						if(!extant){											//label doesn't exist in table. Create it
+							Triple labelTriple = Triple.createTriple(att_from_above, cur_cluster, questions_asked);
+							//add to list or put in table??
 						}
-						
 					}
 					else{
-						writeRequestFile(2, att_from_above, att_from_above); //recluster
+						writeRequestFile(2, att_from_above, att_from_above); 	//recluster
 						req_sent = true;
 					}
 				}
 				else{
-					writeRequestFile(2, att_from_above, att_from_above); //recluster
+					writeRequestFile(2, att_from_above, att_from_above); 		//recluster
 					req_sent = true;
 				}
 			}
@@ -323,10 +336,10 @@ public class GroundedAutoQuestion {
 				writeRequestFile(1,att_from_above);
 				req_sent = false;
 			}
-			while(!responseFileExists()){		//wait for Java to respond with updated cluster
+			while(!responseFileExists()){										//wait for Java to respond with updated cluster
 					sleep(.01);
 			}
-			readResponseFile();				//grab next cluster if successful
+			readResponseFile();													//grab next cluster if successful
 			req_sent = false;
 		}
 	}

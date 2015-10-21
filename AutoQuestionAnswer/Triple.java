@@ -6,20 +6,21 @@
 
 public class Triple<F, S, T> {
     private F label; //first member of pair
-    private S object_nums; //second member of pair
+    private S objects; //second member of pair
     private T question_num; //third member of pair
 
-    public Triple(F label, S object_nums) {
+    public Triple(F label, S objects, T question_num) {
         this.label = label;
-        this.object_nums = object_nums;
+        this.objects = objects;
+        this.question_num = question_num;
     }
 
     public void setLabel(F label) {
         this.label = label;
     }
 
-    public void setObjectNums(S object_nums) {
-        this.object_nums = object_nums;
+    public void setObjects(S objects) {
+        this.objects = objects;
     }
     public void setQuestionNum(S object_nums) {
         this.question_num = question_num;
@@ -29,7 +30,7 @@ public class Triple<F, S, T> {
         return label;
     }
 
-    public S getObjectNums() {
+    public S getObjects() {
         return object_nums;
     }
 
