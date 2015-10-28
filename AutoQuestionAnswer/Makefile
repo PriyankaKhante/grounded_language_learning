@@ -6,7 +6,7 @@ JC = javac
 .java.class: %.java
 	$(JC) $(JFLAGS) $(CLASSPATH) $< -Xlint:none
 
-CLASSES = $(wildcard *.java)
+CLASSES = $(wildcard *.java ./GroundedLanguage/*.java)
 
 default: classes
 
