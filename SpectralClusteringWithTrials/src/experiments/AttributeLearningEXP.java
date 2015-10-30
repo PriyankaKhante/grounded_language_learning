@@ -92,8 +92,10 @@ public class AttributeLearningEXP{
 					//System.out.println("Result size: "+result.size());
 					// Do the following for each cluster starting at depth = 3
 					for(int i=0; i<result.size(); i++){
+						System.out.println("Sending clusters to display: " + result.get(i).getIDs());
+						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i));
 						// Get the clusterNumber
-						ArrayList<String> clusterids = result.get(i).getIDs();
+						/*ArrayList<String> clusterids = result.get(i).getIDs();
 						String listString = "";
 						for(String clusterIDs : clusterids){
 							listString += clusterIDs + ",";
@@ -101,7 +103,7 @@ public class AttributeLearningEXP{
 						int clusterNum = DB.getClusterNumber(listString);
 						
 						// Send a command to create response.txt
-						createResponseFile(rc_behavior_modalities[j], DB, result.get(i), clusterNum);
+						createResponseFile(rc_behavior_modalities[j], DB, result.get(i), clusterNum);*/
 					}
 					//System.out.println("Changing modalities");
 					result.clear();
@@ -114,6 +116,44 @@ public class AttributeLearningEXP{
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+	
+	public static void selectClustersToDisplay(String rc_behavior_modality, ClusterDB DB, ObjectClusterer result){
+		if(result.getIDs().size() <= 5){
+			HashMap<Integer, ObjectClusterer> clusterNumAndOCTable = DB.getClusterNumAndOCTable();
+			for (Map.Entry<Integer, ObjectClusterer> e : clusterNumAndOCTable.entrySet()) {
+				ArrayList<String> tempClusterIds = e.getValue().getIDs();
+					
+				if(tempClusterIds.equals(result.getIDs())){
+					System.out.println("New cluster: " + (Integer)e.getKey());
+					// Send the modified clusters to be displayed
+					createResponseFile(rc_behavior_modality, DB, result, (Integer)e.getKey());
+					break;
+				}
+			}
+			// Get the clusterNumber
+			//ArrayList<String> clusterids = result.getIDs();
+			//String listString = "";
+			//for(String clusterIDs : clusterids){
+				//listString += clusterIDs + ",";
+			//}
+			//int clusterNum = DB.getClusterNumber(listString);
+			
+			// Send a command to create response.txt
+			//createResponseFile(rc_behavior_modality, DB, result, clusterNum);
+		}
+		else{
+			if(result.getChildren().size() != 0){
+				for(int m=0; m<result.getChildren().size(); m++){
+					ObjectClusterer OCC = result.getChildren().get(m);
+					if(OCC.getIDs().size() <= 5)
+						selectClustersToDisplay(rc_behavior_modality, DB, OCC);
+					else{
+						selectClustersToDisplay(rc_behavior_modality, DB, OCC);
+					}
+				}
+			}
 		}
 	}
 	

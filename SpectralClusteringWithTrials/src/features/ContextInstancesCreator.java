@@ -35,6 +35,9 @@ public class ContextInstancesCreator {
 			if (inst != null)
 				data.add(inst);
 		}
+		//Uncomment the following if you want to do PCA on the data
+		//Instances PCA_data = this.performPCA(data);
+		//return PCA_data;
 		return data;
 	}
 	
@@ -47,6 +50,16 @@ public class ContextInstancesCreator {
 		}
 		
 		return data;
+	}
+	
+	public Instances performPCA(Instances data) throws Exception{
+		PrincipalComponents pca = new PrincipalComponents();
+		//System.out.println("Number of attr: "+CD.getDim());
+		pca.setMaximumAttributeNames(CD.getDim());
+		pca.setInputFormat(data);
+		Instances PCA_data = Filter.useFilter(data, pca);
+		//System.out.println("PCA_Data: "+PCA_data);
+		return PCA_data;
 	}
 	
 	/*public Instances generateTestSetForObject(String object, int num_exec, int test_exec){
