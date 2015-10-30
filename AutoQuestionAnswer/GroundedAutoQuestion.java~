@@ -23,7 +23,7 @@ import GroundedLanguage.*;
  */
 
 public class GroundedAutoQuestion {
-	public static final String filePath = "/home/users/pkhante/Pictures/grounded_learning_images/";
+	public static final String filePath		= "/home/users/pkhante/Pictures/grounded_learning_images/";
 	public static final String reqFilePath	= "/home/users/pkhante/Desktop/";
 	public static final String responseName	= "groundedResponse.txt";
 	public static final String requestName	= "groundedRequest.txt";
@@ -51,7 +51,7 @@ public class GroundedAutoQuestion {
 	 */
 	HashMap<String, HashMap<String, String> > loadGroundTruthTable(){
 		try{
-			BufferedReader in = new BufferedReader(new FileReader("etc/ground_truth_table.csv"));
+			BufferedReader in = new BufferedReader(new FileReader("etc/groundedtruetable.csv"));
 			String attributes[] = new String[8];
 			//grab all the attribute names. Note that these should match that is output
 			//by the modified weca program
