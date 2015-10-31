@@ -8,6 +8,8 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import features.ContextFeatureData;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.PrincipalComponents;
 
 public class ContextInstancesCreator {
 

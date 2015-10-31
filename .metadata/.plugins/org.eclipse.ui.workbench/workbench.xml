@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workbench progressCount="18" version="2.0">
 <workbenchAdvisor/>
-<window height="1056" width="1854" x="65" y="24">
+<window height="1055" width="937" x="65" y="24">
 <fastViewData fastViewLocation="1024"/>
 <perspectiveBar>
 <itemSize x="160"/>
@@ -13,7 +13,7 @@
 <coolItem id="org.eclipse.debug.ui.launch.toolbar" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="156" y="30"/>
 <coolItem id="org.eclipse.debug.ui.main.toolbar" itemType="typeToolBarContribution" x="316" y="30"/>
-<coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="88" y="30"/>
+<coolItem id="org.eclipse.jdt.ui.JavaElementCreationActionSet" itemType="typeToolBarContribution" x="119" y="30"/>
 <coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="88" y="30"/>
 <coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="124" y="30"/>
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
@@ -35,13 +35,14 @@
 <part id="1"/>
 <part id="2"/>
 <part id="3"/>
+<part id="4"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
-<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="AttributeLearningEXP.java" partName="AttributeLearningEXP.java" path="/home/users/pkhante/workspace/SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java" title="AttributeLearningEXP.java" tooltip="SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="AttributeLearningEXP.java" partName="AttributeLearningEXP.java" path="/home/users/pkhante/grounded_language_learning/SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java" title="AttributeLearningEXP.java" tooltip="SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java"/>
-<editorState selectionHorizontalPixel="0" selectionLength="6" selectionOffset="9778" selectionTopPixel="4267"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1533" selectionTopPixel="0"/>
 </editor>
 <editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ClusterDB.java" partName="ClusterDB.java" path="/home/users/pkhante/workspace/SpectralClusteringWithTrials/src/categorization/ClusterDB.java" title="ClusterDB.java" tooltip="SpectralClusteringWithTrials/src/categorization/ClusterDB.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SpectralClusteringWithTrials/src/categorization/ClusterDB.java"/>
@@ -51,9 +52,13 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SpectralClusteringWithTrials/src/categorization/ObjectClusterer.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="263" selectionTopPixel="0"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DataLoaderCY.java" partName="DataLoaderCY.java" path="/home/users/pkhante/grounded_language_learning/SpectralClusteringWithTrials/src/data/DataLoaderCY.java" title="DataLoaderCY.java" tooltip="SpectralClusteringWithTrials/src/data/DataLoaderCY.java" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DataLoaderCY.java" partName="DataLoaderCY.java" path="/home/users/pkhante/grounded_language_learning/SpectralClusteringWithTrials/src/data/DataLoaderCY.java" title="DataLoaderCY.java" tooltip="SpectralClusteringWithTrials/src/data/DataLoaderCY.java" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SpectralClusteringWithTrials/src/data/DataLoaderCY.java"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5025" selectionTopPixel="0"/>
+</editor>
+<editor id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContextInstancesCreator.java" partName="ContextInstancesCreator.java" path="/home/users/pkhante/grounded_language_learning/SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java" title="ContextInstancesCreator.java" tooltip="SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="225" selectionTopPixel="0"/>
 </editor>
 </editors>
 <views>
@@ -139,7 +144,7 @@
 </view>
 <view id="org.eclipse.jdt.ui.JavadocView" partName="Javadoc"/>
 </views>
-<perspectives activePart="org.eclipse.jdt.ui.PackageExplorer" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
+<perspectives activePart="org.eclipse.jdt.ui.CompilationUnitEditor" activePerspective="org.eclipse.jdt.ui.JavaPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.ui.internal.ide.application.ResourcePerspective" id="org.eclipse.ui.resourcePerspective" label="Resource"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -286,8 +291,8 @@
 <page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
 </folder>
 </info>
-<info part="org.eclipse.ui.editorss" ratio="0.12913728" ratioLeft="238" ratioRight="1605" relationship="2" relative="left"/>
-<info folder="true" part="bottom" ratio="0.54044944" ratioLeft="481" ratioRight="409" relationship="4" relative="org.eclipse.ui.editorss">
+<info part="org.eclipse.ui.editorss" ratio="0.11447084" ratioLeft="106" ratioRight="820" relationship="2" relative="left"/>
+<info folder="true" part="bottom" ratio="0.9583802" ratioLeft="852" ratioRight="37" relationship="4" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.jdt.ui.JavadocView" label="Javadoc"/>
@@ -309,7 +314,7 @@
 </presentation>
 </folder>
 </info>
-<info folder="true" part="right" ratio="0.86683416" ratioLeft="690" ratioRight="106" relationship="2" relative="org.eclipse.ui.editorss">
+<info folder="true" part="right" ratio="0.86287194" ratioLeft="667" ratioRight="106" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
 <page content="org.eclipse.ui.texteditor.TemplatesView" label="LabelNotFound"/>
@@ -411,19 +416,9 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/SpectralClusteringWithTrials/src/categorization/ClusterDB.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/SpectralClusteringWithTrials/src/categorization/ObjectClusterer.java"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/SpectralClusteringWithTrials/src/data/DataLoaderCY.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" path="/SpectralClusteringWithTrials/src/experiments/AttributeLearningEXP.java"/>
 </editors>
-<item historyLabel="AttributeLearningEXP.java" index="0">
-<position info="not_deleted" x="4090" y="0"/>
-</item>
-<item historyLabel="ClusterDB.java" index="1">
-<position info="not_deleted" x="10145" y="0"/>
-</item>
-<item historyLabel="AttributeLearningEXP.java" index="0">
-<position info="not_deleted" x="4090" y="0"/>
-</item>
-<item historyLabel="ClusterDB.java" index="1">
-<position info="not_deleted" x="584" y="43"/>
-</item>
 <item historyLabel="AttributeLearningEXP.java" index="0">
 <position info="not_deleted" x="4090" y="0"/>
 </item>
@@ -559,7 +554,19 @@
 <item historyLabel="AttributeLearningEXP.java" index="0">
 <position info="not_deleted" x="9778" y="6"/>
 </item>
-<item active="true" historyLabel="DataLoaderCY.java" index="3">
+<item historyLabel="DataLoaderCY.java" index="3">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="ContextInstancesCreator.java" index="4">
+<position info="not_deleted" x="4672" y="0"/>
+</item>
+<item historyLabel="ContextInstancesCreator.java" index="4">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item historyLabel="AttributeLearningEXP.java" index="5">
+<position info="not_deleted" x="0" y="0"/>
+</item>
+<item active="true" historyLabel="AttributeLearningEXP.java" index="5">
 <position info="not_deleted" x="0" y="0"/>
 </item>
 </navigationHistory>
@@ -579,6 +586,9 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="ContextInstancesCreator.java" tooltip="SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java">
+<persistable path="/SpectralClusteringWithTrials/src/features/ContextInstancesCreator.java"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.jdt.ui.CompilationUnitEditor" name="DataLoaderCY.java" tooltip="SpectralClusteringWithTrials/src/data/DataLoaderCY.java">
 <persistable path="/SpectralClusteringWithTrials/src/data/DataLoaderCY.java"/>
 </file>
