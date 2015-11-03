@@ -47,8 +47,8 @@ public class AttributeLearningEXP{
 	
 	public static void main(String[] args) throws Exception{
 		//behaviour-modailities to use
-		String [] rc_behavior_modalities = {"drop_audio","revolve_audio","push_audio","shake_audio", "hold_haptics","lift_haptics",
-											"press_haptics","squeeze_haptics","grasp_size","look_color","look_shape"};
+		String [] rc_behavior_modalities = {"look_color"};//{"drop_audio","revolve_audio","push_audio","shake_audio", "hold_haptics","lift_haptics",
+											//"press_haptics","squeeze_haptics","grasp_size","look_color","look_shape"};
 		
 		// Modalities that have been taken out
 		// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,

@@ -43,11 +43,14 @@ public class GroundedAutoQuestion {
 	static HashMap<String, HashMap<String, String> > groundTruthTable;
 	static HashMap<String, Integer> questionCountPerContext = new HashMap<String, Integer>();
 	static HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
-	static ArrayList<String> outliers;
+	static ArrayList<String> outliers = new ArrayList<String>();
 	static int questionCount = 0;
     static int questions_per_label = 0;
 
 	public static void main(String[] args) {
+		loadGroundTruthTable();
+		// Create a first request file
+		writeRequestFile(1,"","");
 		sequence();
 		writeLabelTableToFile(labelTable);
 		writeQuestionCountTableToFile();	
@@ -62,23 +65,23 @@ public class GroundedAutoQuestion {
 	 * Maps: obj_name -> attribute_name (eg color) -> value
 	 * The following attributes have numerical output: height weight and width
 	 */
-	HashMap<String, HashMap<String, String> > loadGroundTruthTable(){
+	static void loadGroundTruthTable(){
 		try{
-			BufferedReader in = new BufferedReader(new FileReader("etc/ground_truth_table.csv"));
-			String attributes[] = new String[8];
+			BufferedReader in = new BufferedReader(new FileReader("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
+			String attributes[] = new String[9];
 			//grab all the attribute names. Note that these should match that is output
-			//by the modified weca program
+			//by the modified weka program
 			String line;
 			if((line = in.readLine()) != null){
 				StringTokenizer tokenizer = new StringTokenizer(line,",");
 				int columnNum = 1;
 
 				while (tokenizer.hasMoreTokens()){
-					attributes[columnNum] = tokenizer.nextToken();
+					attributes[columnNum-1] = tokenizer.nextToken();
 					columnNum++;
 				}
 			}
-			HashMap<String, HashMap<String, String> > groundTruthTable = new HashMap<String, HashMap<String, String> >();
+			groundTruthTable = new HashMap<String, HashMap<String, String> >();
 			//build the rest of the table
 			while((line = in.readLine()) != null){
 				StringTokenizer tokenizer = new StringTokenizer(line,","); 
@@ -87,17 +90,19 @@ public class GroundedAutoQuestion {
 
 				String name = tokenizer.nextToken();
 				while (tokenizer.hasMoreTokens()){ 
+					System.out.println("Attributes: "+attributes[columnNum]);
+					System.out.println("Token: "+tokenizer.nextToken());
 					objectTruthTable.put(attributes[columnNum], tokenizer.nextToken());
 					columnNum++;
 				}
 				groundTruthTable.put(name,objectTruthTable);
 			}
-
-			in.close();
+		
+		  in.close();
 		} catch(IOException e){
  		 e.printStackTrace();
 		}
-		return groundTruthTable;
+		//return groundTruthTable;
 	}
 
 	/*
@@ -190,15 +195,16 @@ public class GroundedAutoQuestion {
 		String line;
 		int lineNum = 0;
 		int ID;
+		String old_mod = "";
 		ArrayList<String> objects = new ArrayList<String>();
 		String fullPath = (reqFilePath + responseName);
 		try{
-			BufferedReader myfile = new BufferedReader(new FileReader("etc/groundedtruetable.csv"));
+			BufferedReader myfile = new BufferedReader(new FileReader("/home/users/pkhante/Desktop/groundedResponse.txt"));
 			if(myfile != null){
 				while((line = myfile.readLine()) != null){
 					if(lineNum == 0){
-						String old_mod = modality;
 						modality = line;
+						old_mod = modality;
 						int first = modality.compareTo(old_mod);
 						if(first == 0){
 							firstTime = true;
@@ -322,6 +328,7 @@ public class GroundedAutoQuestion {
 		if(question.equals("Are all of these objects similar in ")){
 			//search through gt for all objects in cluster. if any labels differ, return 'no' ie op1 ie true
 			String label = "";
+
 			for(int i =0; i < cur_cluster.size(); i++){
 				HashMap<String,String> objectEntry = groundTruthTable.get(cur_cluster.get(i));
 				if(i == 0)
@@ -545,6 +552,7 @@ public class GroundedAutoQuestion {
 
 			//get next cluster
 			if(!req_sent){
+				System.out.println("Att_from_above: "+att_from_above);
 				writeRequestFile(1,att_from_above);
 				req_sent = false;
 			}
