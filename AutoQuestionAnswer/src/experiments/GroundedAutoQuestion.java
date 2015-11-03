@@ -42,13 +42,15 @@ public class GroundedAutoQuestion {
 	static boolean firstTime;
 	static HashMap<String, HashMap<String, String> > groundTruthTable;
 	static HashMap<String, Integer> questionCountPerContext = new HashMap<String, Integer>();
+	static HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
 	static ArrayList<String> outliers;
 	static int questionCount = 0;
     static int questions_per_label = 0;
 
 	public static void main(String[] args) {
 		sequence();
-		writeQuestionCountTableToFile();
+		writeLabelTableToFile(labelTable);
+		writeQuestionCountTableToFile();	
 	}
 
 	public GroundedAutoQuestion(){
@@ -413,7 +415,6 @@ public class GroundedAutoQuestion {
 		readResponseFile();
 		String att_from_above = "";
 		boolean req_sent = false;
-		HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
 		Pair curContextPair = null;
 		ArrayList<Triple> values = null;
 		questions_per_label = 0;
@@ -557,23 +558,52 @@ public class GroundedAutoQuestion {
 			readResponseFile();													//grab next cluster if successful
 			req_sent = false;
 		}
-		// Fix the following error
-		//writeLabelTableToFile(labelTable);
 	}
 	
 	public static void writeLabelTableToFile(HashMap<Pair, ArrayList<Triple> > labelTable){
-		 StringWriter output = new StringWriter();
-		 try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
+		try{
+			 PrintWriter writer = new PrintWriter("/etc/LabelTable.csv", "UTF-8");
+		     writer.println("Context,GeneralAttribute,Label,Objects,QuestionCount");
+			 for (Entry<Pair, ArrayList<Triple>> entry : labelTable.entrySet()){
+				 StringWriter output = new StringWriter();
+		         String context = entry.getKey().getContext();
+		         String attr = entry.getKey().getAttribute();   
+		         for(int i=0;i<entry.getValue().size();i++){
+		        	 output.write(context);
+		        	 output.append("," + attr);
+		        	 String label = entry.getValue().get(i).getLabel();
+		        	 output.append("," + label + ",\"");
+		        	 ArrayList<String> objects = entry.getValue().get(i).getObjects(); 
+		        	 for(int j=0;j<objects.size();j++){
+		        		 output.append(objects.get(j) + ",");
+		        		 if(j == objects.size() - 1)
+		        			 output.append(objects.get(j) + "\",");
+		        	 }
+		        	 String questionCount = Integer.toString(entry.getValue().get(i).getQuestionNum());
+		        	 output.append(questionCount);
+		        	 writer.println(output);
+		          }
+		     }
+			 writer.close();
+		}
+		catch(IOException e){
+			 e.printStackTrace();
+		}
+		 
+		 /*try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
 		     for (Entry<Pair, ArrayList<Triple>> entry : labelTable.entrySet()){
 		          listWriter.write(entry.getKey(), entry.getValue());
 		     }
 		     
-		     PrintWriter writer = new PrintWriter("/etc/LabelTable.csv", "UTF-8");
+		     //PrintWriter writer = new PrintWriter("/etc/LabelTable.csv", "UTF-8");
+		     PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/LabelTable.csv", "UTF-8");
+		     writer.println("Context,GeneralAttribute,Label,Objects,QuestionCount");
+		     writer.println(output);
 		     writer.close();
 		 }
 		 catch(IOException e){
 			 e.printStackTrace();
-		 }
+		 }*/
 	}
 	
 	public static void writeQuestionCountTableToFile(){
