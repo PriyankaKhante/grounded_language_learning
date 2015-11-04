@@ -84,15 +84,16 @@ public class AttributeLearningEXP{
 			if(validReq){
 				// Do the following for each behaviour-modality
 				for(int j=0; j < rc_behavior_modalities.length; j++){
-					// Get clusters starting from depth = 3 
+					// Get clusters starting from depth = 2
 					ArrayList<ObjectClusterer> result = getClustersAtDepth(rc_behavior_modalities[j], 2);
 					Collections.shuffle(result);
 					// Get clusterNumber
 					ClusterDB DB = behavior_modality_clusters.get(rc_behavior_modalities[j]);
 					//System.out.println("Result size: "+result.size());
-					// Do the following for each cluster starting at depth = 3
+					// Do the following for each cluster starting at depth = 2
+					//for(int i=0; i<result.size(); i++){
 					for(int i=0; i<result.size(); i++){
-						System.out.println("Sending clusters to display: " + result.get(i).getIDs());
+						//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
 						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i));
 						// Get the clusterNumber
 						/*ArrayList<String> clusterids = result.get(i).getIDs();
@@ -109,9 +110,10 @@ public class AttributeLearningEXP{
 					result.clear();
 					DB.mergeOutlierObjectsWithClusters();
 					DB.mergeClustersWithSameLabels();
-					DB.printClustersWithObjectIDsAndLabels(rc_behavior_modalities[j]);
+					//DB.printClustersWithObjectIDsAndLabels(rc_behavior_modalities[j]);
 				}
-				//System.out.println("Done with all modality");
+				createEndFile();
+				//System.out.println("Done with all modalities");
 			}
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -126,7 +128,7 @@ public class AttributeLearningEXP{
 				ArrayList<String> tempClusterIds = e.getValue().getIDs();
 					
 				if(tempClusterIds.equals(result.getIDs())){
-					System.out.println("New cluster: " + (Integer)e.getKey());
+					//System.out.println("New cluster: " + (Integer)e.getKey());
 					// Send the modified clusters to be displayed
 					createResponseFile(rc_behavior_modality, DB, result, (Integer)e.getKey());
 					break;
@@ -157,6 +159,19 @@ public class AttributeLearningEXP{
 		}
 	}
 	
+	public static void createEndFile(){
+		System.out.println("Creating an end program file");
+		try{
+			PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
+			writer.println("EndOfAllModalities");
+			writer.close();
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
 			// Request text file code
@@ -165,6 +180,7 @@ public class AttributeLearningEXP{
 			writer.println(clusterNum);
 			// Get the cluster IDs
 			ArrayList<String> IDs = OBC.getIDs();
+			//System.out.println("Sending clusters to display: " + IDs.toString());
 			for(int g=0; g<IDs.size(); g++){
 				writer.println(IDs.get(g));
 			}
