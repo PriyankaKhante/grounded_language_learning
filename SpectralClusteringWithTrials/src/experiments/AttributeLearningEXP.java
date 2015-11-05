@@ -432,12 +432,8 @@ public class AttributeLearningEXP{
 			
 			behavior_modality_clusters.put(rc_behavior_modality, CDB);
 			
-			// TODO: Add the code to see if a label is provided
-			// if(label){
-			//CDB.setLabelForCluster(clusterNumber, label);}
-			
-			//System.out.println("\n\nObject Clustering:\n");
-			//OC.printClustering(10);
+			System.out.println("\n\nObject Clustering:\n");
+			OC.printClustering(10);
 			
 			//deleteIDFromAllClusters("tin_can", OC);
 			//System.out.println("\n\nObject Clustering2:\n");

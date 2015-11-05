@@ -29,6 +29,13 @@ import org.supercsv.prefs.CsvPreference;
  Questions holds the number of questions required to obtain this pairing
  */
 
+//************** TODO:
+// 1) last object is being added twice in the label table
+// 2) .CSV creation is off for some reason
+// 3) writeQuestionCountTableToFile() is not printing the .csv file
+// 4) QuestionCount is totally off
+//********************
+
 public class GroundedAutoQuestion {
 	public static final String filePath = "/home/users/pkhante/Pictures/grounded_learning_images/";
 	public static final String reqFilePath	= "/home/users/pkhante/Desktop/";
@@ -519,8 +526,9 @@ public class GroundedAutoQuestion {
 							boolean extant = false;
 							//store answer as label
 							values = labelTable.get(curContextPair); //overwriting here?
+							
 							if(values != null){
-								for(int j = 0; j < values.size() & !extant; j++){
+								for(int j = 0; j < values.size(); j++){
 									if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
 										Triple temp = values.remove(j);					//must remove element, to update it, then add it back
 										ArrayList<String> objects = temp.getObjects();
@@ -534,11 +542,15 @@ public class GroundedAutoQuestion {
 								labelTable.get(curContextPair).addAll(values);
 							}
 							
-							if(extant){											//label doesn't exist in table. Create it
+							if(values == null){
+								values = new ArrayList<Triple>();
+							}
+							
+							if(extant == false){											//label doesn't exist in table. Create it
 								Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
 								//add to list or put in table??
 								values.add(labelTriple);
-								labelTable.get(curContextPair).addAll(values);
+								labelTable.put(curContextPair, values);
 								extant = true;
 							}
 
@@ -567,7 +579,7 @@ public class GroundedAutoQuestion {
 						//store answer as label
 						values = labelTable.get(curContextPair); //overwriting here?
 						if(values != null){
-							for(int j = 0; j < values.size() & !extant; j++){
+							for(int j = 0; j < values.size(); j++){
 								if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
 									Triple temp = values.remove(j);					//must remove element, to update it, then add it back
 									ArrayList<String> objects = temp.getObjects();
@@ -581,7 +593,7 @@ public class GroundedAutoQuestion {
 							labelTable.get(curContextPair).addAll(values);
 						}
 						
-						if(extant){											//label doesn't exist in table. Create it
+						if(extant == false){											//label doesn't exist in table. Create it
 							Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
 							//add to list or put in table??
 							values.add(labelTriple);
