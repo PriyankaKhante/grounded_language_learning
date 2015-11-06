@@ -30,7 +30,6 @@ import org.supercsv.prefs.CsvPreference;
  */
 
 //************** TODO:
-// 1) last object is being added twice in the label table
 // 2) .CSV creation is off for some reason
 // 3) writeQuestionCountTableToFile() is not printing the .csv file
 // 4) QuestionCount is totally off
@@ -38,11 +37,13 @@ import org.supercsv.prefs.CsvPreference;
 
 public class GroundedAutoQuestion {
 	public static final String filePath = "/home/users/pkhante/Pictures/grounded_learning_images/";
-	public static final String reqFilePath	= "/home/users/pkhante/Desktop/";
+	//public static final String reqFilePath	= "/home/users/pkhante/Desktop/";
+	public static final String reqFilePath	= "/Users/Priyanka/Desktop/";
 	public static final String responseName	= "groundedResponse.txt";
 	public static final String requestName	= "groundedRequest.txt";
 
 	static String modality;
+	static String old_mod = "";
 	static ArrayList<String> cur_cluster;
 	static String clusterAttribute;
 	static int clusterNum; //is this needed?
@@ -72,7 +73,8 @@ public class GroundedAutoQuestion {
 	 */
 	static void loadGroundTruthTable(){
 		try{
-			BufferedReader in = new BufferedReader(new FileReader("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
+			BufferedReader in = new BufferedReader(new FileReader("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
+			//BufferedReader in = new BufferedReader(new FileReader("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
 			String attributes[] = new String[9];
 			//grab all the attribute names. Note that these should match that is output
 			//by the modified weka program
@@ -199,19 +201,22 @@ public class GroundedAutoQuestion {
 		String line;
 		int lineNum = 0;
 		int ID;
-		String old_mod = "";
 		ArrayList<String> objects = new ArrayList<String>();
 		String fullPath = (reqFilePath + responseName);
 		try{
-			BufferedReader myfile = new BufferedReader(new FileReader("/home/users/pkhante/Desktop/groundedResponse.txt"));
+			BufferedReader myfile = new BufferedReader(new FileReader("/Users/Priyanka/Desktop/groundedResponse.txt"));
+			//BufferedReader myfile = new BufferedReader(new FileReader("/home/users/pkhante/Desktop/groundedResponse.txt"));
 			if(myfile != null){
 				while((line = myfile.readLine()) != null){
 					if(!(line.equals("EndOfAllModalities"))){
 						if(lineNum == 0){
 							modality = line;
-							old_mod = modality;
+							//System.out.println("Modality: " + modality);
 							int first = modality.compareTo(old_mod);
-							if(first == 0){
+							//System.out.println("Old_mod: " + old_mod);
+							old_mod = modality;
+							//System.out.println("Value of first: " + first);
+							if(first == 10){
 								firstTime = true;
 								//Store the previous questionCount and reset it for the next context
 								if(questionCount != 0)
@@ -244,9 +249,9 @@ public class GroundedAutoQuestion {
 			}
 			cur_cluster = objects;
 
-			/*for(int i = 0; i < cur_cluster.size(); i++){
+			for(int i = 0; i < cur_cluster.size(); i++){
 				System.out.println("Got: " + cur_cluster.get(i));
-			}*/
+			}
 
 			try {
 		        Path path = FileSystems.getDefault().getPath(reqFilePath, responseName);
@@ -313,7 +318,7 @@ public class GroundedAutoQuestion {
 		*/
 		if(question.equals("What/how ") || question.equals("What is the ") || question.equals("What ")){
 			HashMap<String, String> objectLabels = groundTruthTable.get(cur_cluster.get(0));
-			//System.out.println("**********Label***************: " +objectLabels.get(modality));
+			System.out.println("**********Label***************: " +objectLabels.get(modality));
 			return objectLabels.get(modality);
 		}
 		/*
@@ -458,7 +463,7 @@ public class GroundedAutoQuestion {
 		String att_from_above = "";
 		boolean req_sent = false;
 		Pair curContextPair = null;
-		ArrayList<Triple> values = null;
+		ArrayList<Triple> value = null;
 		questions_per_label = 0;
 		while(true){
 			if(firstTime){
@@ -476,7 +481,10 @@ public class GroundedAutoQuestion {
 				 *got modality and attribute. make a pair and begin gathering labels.
 				 */
 				curContextPair = new Pair(modality,feature_vec.get(0));
-				//values = labelTable.get(curContextPair);
+				System.out.println("Current context pair: " + modality + "   "+  feature_vec.get(0));
+				value = new ArrayList<Triple>();
+				labelTable.put(curContextPair, value);
+				System.out.println("Size of label table at the beginning: " + labelTable.size());
 
 				clusterAttribute = feature_vec.get(0);
 				//System.out.println("*********CLUSTER ATTRIBUTE********** : " + clusterAttribute);
@@ -487,16 +495,15 @@ public class GroundedAutoQuestion {
 					//if context and general attribute are not exclusive, should break it apart like below
 					//otherwise there can only be one attribute that matches, which has to exist because its whats being analyzed in the current
 					//cycle.
-					boolean done = false;
-					if(!done){
-						att_from_above = ask_free_resp("What/how " , clusterAttribute);
-						//issue here. labelTriple is fine but labelTable expects a mapping to an arraylist of entries.
-						//should probably just add labelTriple to an arraylist and add mapping once questions are over for this modality
-						Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
-						ArrayList<Triple> temp = new ArrayList<Triple>();
-						temp.add(labelTriple);
-						labelTable.put(curContextPair,temp);
-					}
+				    ArrayList<Triple> temp = labelTable.get(curContextPair);
+					att_from_above = ask_free_resp("What/how " , clusterAttribute);
+					//issue here. labelTriple is fine but labelTable expects a mapping to an arraylist of entries.
+					//should probably just add labelTriple to an arraylist and add mapping once questions are over for this modality
+					Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
+					temp.add(labelTriple);
+					labelTable.put(curContextPair,temp);
+					System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString());
+					//System.out.println("Size of label table in !done: " + labelTable.size());
 					/*
 					else {
 						System.out.println("Attribute not found in table.");
@@ -512,45 +519,44 @@ public class GroundedAutoQuestion {
 					if(!mult_choice){
 						ArrayList<String> outliers = splitString(
 								ask_free_resp("Please specify the names of the outlier(s), separated by spaces", ""));
-						ArrayList<String> full_cluster = cur_cluster;
+						ArrayList<String> full_cluster = (ArrayList<String>) cur_cluster.clone();
+						System.out.println("Full_cluster at beginning: " + full_cluster.toString());
 						String outlier_name = null;
 						
 						for(int i = 0; i < outliers.size(); i++){
 							outlier_name = outliers.get(i);
 							full_cluster.remove(outlier_name);
+							System.out.println("Full cluster after removing outlier: " + full_cluster.toString());
 							cur_cluster.clear();
 							cur_cluster.add(outlier_name);
+							System.out.println("Full cluster later on: " + full_cluster);
+							System.out.println("Current cluster later on: " + cur_cluster);
 							
 							String answer = ask_free_resp("What is the ", clusterAttribute);
-							
+							System.out.println("Label of the outlier: "+answer);
 							boolean extant = false;
 							//store answer as label
-							values = labelTable.get(curContextPair); //overwriting here?
+							ArrayList<Triple> values = labelTable.get(curContextPair); //overwriting here?
 							
-							if(values != null){
-								for(int j = 0; j < values.size(); j++){
-									if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
-										Triple temp = values.remove(j);					//must remove element, to update it, then add it back
-										ArrayList<String> objects = temp.getObjects();
-										objects.add(outlier_name);
-										Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
-										values.add(update);								//finally add back the updated triple
-										extant = true;
-									}
+							for(int j = 0; j < values.size() && extant == false; j++){
+								if(values.get(j).getLabel().equals(answer)){ //label exists in table. Add it to list of objects
+									Triple temp = values.remove(j);					//must remove element, to update it, then add it back
+									ArrayList<String> objects = temp.getObjects();
+									objects.add(outlier_name);
+									Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
+									values.add(update);								//finally add back the updated triple
+									extant = true;
+									System.out.println("Values after updating a label: " + values.size());
 								}
-								labelTable.get(curContextPair).clear();
-								labelTable.get(curContextPair).addAll(values);
 							}
-							
-							if(values == null){
-								values = new ArrayList<Triple>();
-							}
+							labelTable.put(curContextPair, values);
 							
 							if(extant == false){											//label doesn't exist in table. Create it
-								Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
+								Triple labelTriple = new Triple(answer, cur_cluster, questions_per_label);
 								//add to list or put in table??
 								values.add(labelTriple);
 								labelTable.put(curContextPair, values);
+								System.out.println("Values after adding a new label: " + values.size());
 								extant = true;
 							}
 
@@ -573,31 +579,35 @@ public class GroundedAutoQuestion {
 						 * the existance of the attribute. If it exists, add the label to the vector of labels already seen
 						 * Otherwise, add an entry pair <feature, vec:labels>
 						 */
+						
 						cur_cluster = full_cluster; //make the current cluster the previous current cluster minus the outliers
+						System.out.println("Full cluster after removing outliers: " + full_cluster.toString());
 						att_from_above = ask_free_resp("What " , clusterAttribute);
+						System.out.println("Att_From_above: " + att_from_above);
 						boolean extant = false;
 						//store answer as label
-						values = labelTable.get(curContextPair); //overwriting here?
-						if(values != null){
-							for(int j = 0; j < values.size(); j++){
-								if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
-									Triple temp = values.remove(j);					//must remove element, to update it, then add it back
-									ArrayList<String> objects = temp.getObjects();
-									objects.add(outlier_name);
-									Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
-									values.add(update);								//finally add back the updated triple
-									extant = true;
+						ArrayList<Triple> values = labelTable.get(curContextPair); //overwriting here?
+						for(int j = 0; j < values.size() && extant == false; j++){
+							if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
+								Triple temp = values.remove(j);					//must remove element, to update it, then add it back
+								System.out.println("There is a matching label");
+								ArrayList<String> objects = temp.getObjects();
+								for(int k = 0; k<cur_cluster.size(); k++){
+									objects.add(cur_cluster.get(k));
 								}
+								Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
+								values.add(update);								//finally add back the updated triple
+								extant = true;
 							}
-							labelTable.get(curContextPair).clear();
-							labelTable.get(curContextPair).addAll(values);
 						}
+						labelTable.put(curContextPair, values);
 						
 						if(extant == false){											//label doesn't exist in table. Create it
+							System.out.println("There is NO matching label");
 							Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
 							//add to list or put in table??
 							values.add(labelTriple);
-							labelTable.get(curContextPair).addAll(values);
+							labelTable.put(curContextPair, values);
 							extant = true;
 						}
 					}
@@ -632,25 +642,31 @@ public class GroundedAutoQuestion {
 	}
 	
 	public static void writeLabelTableToFile(HashMap<Pair, ArrayList<Triple> > labelTable){
+		System.out.println("The number of items in LabelTable: "+labelTable.size()); 
 		try{
-			 PrintWriter writer = new PrintWriter("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/LabelTable.csv", "UTF-8");
+			 PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/LabelTable.csv", "UTF-8");
 		     writer.println("Context,GeneralAttribute,Label,Objects,QuestionCount");
 			 for (Entry<Pair, ArrayList<Triple>> entry : labelTable.entrySet()){
-				 StringWriter output = new StringWriter();
 		         String context = entry.getKey().getContext();
 		         String attr = entry.getKey().getAttribute();   
+		         System.out.println("Entry.getValue().size(): "+entry.getValue().size()); 
 		         for(int i=0;i<entry.getValue().size();i++){
-		        	 output.write(context);
+		        	 StringWriter output = new StringWriter();
+		        	 output.append(context);
 		        	 output.append("," + attr);
 		        	 String label = entry.getValue().get(i).getLabel();
+		        	 System.out.println("Label: " + label);
 		        	 output.append("," + label + ",\"");
 		        	 ArrayList<String> objects = entry.getValue().get(i).getObjects(); 
 		        	 for(int j=0;j<objects.size();j++){
-		        		 output.append(objects.get(j) + ",");
+		        		 System.out.println("Object: " + objects.get(j));
 		        		 if(j == objects.size() - 1)
 		        			 output.append(objects.get(j) + "\",");
+		        		 else
+		        			 output.append(objects.get(j) + ",");
 		        	 }
 		        	 String questionCount = Integer.toString(entry.getValue().get(i).getQuestionNum());
+		        	 System.out.println("QuestionCount: " + questionCount + "\n");
 		        	 output.append(questionCount);
 		        	 writer.println(output);
 		          }
@@ -684,7 +700,7 @@ public class GroundedAutoQuestion {
 		          listWriter.write(entry.getKey(), entry.getValue());
 		      }
 		      
-		      PrintWriter writer = new PrintWriter("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/QuestionCountTable.csv", "UTF-8");
+		      PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/QuestionCountTable.csv", "UTF-8");
 		      writer.println("Context,TotalQuestionCount");
 		      writer.println(output);
 		      writer.close();
