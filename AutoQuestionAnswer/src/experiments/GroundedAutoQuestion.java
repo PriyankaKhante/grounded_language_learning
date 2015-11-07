@@ -16,9 +16,6 @@ import java.nio.file.FileSystems;
 import java.io.IOException;
 import GroundedLanguage.*;
 
-import org.supercsv.io.*;  
-import org.supercsv.prefs.CsvPreference;
-
 /* This class uses cluster data as input to facilitate automated question answering
  * A provided grounded truth table will allow for lookups for a corresponding question
  *
@@ -30,9 +27,7 @@ import org.supercsv.prefs.CsvPreference;
  */
 
 //************** TODO:
-// 2) .CSV creation is off for some reason
-// 3) writeQuestionCountTableToFile() is not printing the .csv file
-// 4) QuestionCount is totally off
+// 1) QuestionCount and questions_per_label are totally off
 //********************
 
 public class GroundedAutoQuestion {
@@ -219,8 +214,9 @@ public class GroundedAutoQuestion {
 							if(first == 10){
 								firstTime = true;
 								//Store the previous questionCount and reset it for the next context
-								if(questionCount != 0)
+								if(questionCount != 0){
 									questionCountPerContext.put(old_mod, questionCount);
+								}
 								questionCount = 0;
 							}
 							else
@@ -469,11 +465,6 @@ public class GroundedAutoQuestion {
 			if(firstTime){
 				firstTime = false;
 				String modality_copy = modality;
-
-				//String delimiter = "_";
-				//int index = modality_copy.find(delimiter);
-				//String action = modality_copy.substr(0, index);
-				//String modality = modality_copy.substr(index+1, modality_copy.length());
 				String resp = ask_free_resp("Please specify what general attribute is described by ", modality);
 				ArrayList<String> feature_vec = splitString(resp);
 
@@ -503,14 +494,6 @@ public class GroundedAutoQuestion {
 					temp.add(labelTriple);
 					labelTable.put(curContextPair,temp);
 					System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString());
-					//System.out.println("Size of label table in !done: " + labelTable.size());
-					/*
-					else {
-						System.out.println("Attribute not found in table.");
-						att_from_above = ask_free_resp("What/how " + clusterAttribute + " are they?");
-						label_table.insert(std::pair<std::string,std::vector<std::string> >(clusterAttribute,
-							splitString(att_from_above)));
-					}*/
 			}
 			else{
 				if(cur_cluster.size() <= 3 || ask_mult_choice("Are most of these objects similar in ", clusterAttribute, "No", "Yes")){
@@ -676,34 +659,22 @@ public class GroundedAutoQuestion {
 		catch(IOException e){
 			 e.printStackTrace();
 		}
-		 
-		 /*try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
-		     for (Entry<Pair, ArrayList<Triple>> entry : labelTable.entrySet()){
-		          listWriter.write(entry.getKey(), entry.getValue());
-		     }
-		     
-		     //PrintWriter writer = new PrintWriter("/etc/LabelTable.csv", "UTF-8");
-		     PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/LabelTable.csv", "UTF-8");
-		     writer.println("Context,GeneralAttribute,Label,Objects,QuestionCount");
-		     writer.println(output);
-		     writer.close();
-		 }
-		 catch(IOException e){
-			 e.printStackTrace();
-		 }*/
 	}
 	
 	public static void writeQuestionCountTableToFile(){
-		 StringWriter output = new StringWriter();
-		 try (ICsvListWriter listWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE)){
-		      for (Entry<String, Integer> entry : questionCountPerContext.entrySet()){
-		          listWriter.write(entry.getKey(), entry.getValue());
-		      }
-		      
-		      PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/QuestionCountTable.csv", "UTF-8");
-		      writer.println("Context,TotalQuestionCount");
-		      writer.println(output);
-		      writer.close();
+		System.out.println("QuestionCountTable Size: " + questionCountPerContext.size());
+		 try {
+			 PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/QuestionCountTable.csv", "UTF-8");
+		     writer.println("Context,TotalQuestionCount");
+		     for (Entry<String, Integer> entry : questionCountPerContext.entrySet()){
+		    	 StringWriter output = new StringWriter();
+		         String context = entry.getKey();
+		         int questionCount = entry.getValue();
+		         output.append(context);
+		         output.append("," + Integer.toString(questionCount));
+		         writer.println(output);
+		     }
+		     writer.close();
 		 }
 		 catch(IOException e){
 			 e.printStackTrace();
