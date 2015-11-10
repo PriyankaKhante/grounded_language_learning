@@ -12,11 +12,17 @@ public class FeatureDataLoader {
 	HashMap<String,ContextFeatureData> CD_map;
 	String [] BM;
 	
-	String audio_path = "/home/users/pkhante/extracted_feature_vectors/audio";
+	/*String audio_path = "/home/users/pkhante/extracted_feature_vectors/audio";
 	String haptics_path = "/home/users/pkhante/extracted_feature_vectors/haptics";
 	String size_path = "/home/users/pkhante/extracted_feature_vectors/grasp_size";
 	String color_path = "/home/users/pkhante/extracted_feature_vectors/look_color";
-	String shape_path = "/home/users/pkhante/extracted_feature_vectors/look_shape";
+	String shape_path = "/home/users/pkhante/extracted_feature_vectors/look_shape";*/
+	
+	String audio_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/audio";
+	String haptics_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/haptics";
+	String size_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/grasp_size";
+	String color_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/look_color";
+	String shape_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/look_shape";
 	
 	public String [] getBehaviorsAndModalities(){
 		return BM;		

@@ -30,7 +30,7 @@ public class ContextInstancesCreator {
 		return dataHeader;
 	}
 	
-	public Instances generateFullSet(ArrayList<InteractionTrial> trials){
+	public Instances generateFullSet(ArrayList<InteractionTrial> trials) throws Exception{
 		Instances data = new Instances(dataHeader);
 		for (int i = 0; i <trials.size(); i++){
 			Instance inst = this.generateInstance(trials.get(i).getObject(), trials.get(i).getTrial());

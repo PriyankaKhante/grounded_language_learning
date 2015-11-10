@@ -98,7 +98,7 @@ public class GroundedAutoQuestion {
 				groundTruthTable.put(name,objectTruthTable);
 			}
 		 
-			//System.out.println(groundTruthTable.get("red_tall_cup").get("height").toString());
+			System.out.println(groundTruthTable.get("red_tall_cup").get("height").toString());
 		  in.close();
 		} catch(IOException e){
  		 e.printStackTrace();
@@ -209,15 +209,15 @@ public class GroundedAutoQuestion {
 							//System.out.println("Modality: " + modality);
 							int first = modality.compareTo(old_mod);
 							//System.out.println("Old_mod: " + old_mod);
-							old_mod = modality;
 							//System.out.println("Value of first: " + first);
-							if(first == 10){
+							if(first != 0){
 								firstTime = true;
 								//Store the previous questionCount and reset it for the next context
-								if(questionCount != 0){
+								if(questionCount != 0)
 									questionCountPerContext.put(old_mod, questionCount);
-								}
+								
 								questionCount = 0;
+								old_mod = modality;
 							}
 							else
 								firstTime = false;
@@ -233,6 +233,7 @@ public class GroundedAutoQuestion {
 						// As all modalities are now done, exit after writing the labelTables to .csv files
 						System.out.println("The program has ended");
 						writeLabelTableToFile(labelTable);
+						questionCountPerContext.put(modality, questionCount);
 						writeQuestionCountTableToFile();	
 						System.exit(0);
 					}
@@ -244,6 +245,7 @@ public class GroundedAutoQuestion {
 				return false;
 			}
 			cur_cluster = objects;
+			System.out.println("Size of current cluster: " + cur_cluster.size());
 
 			for(int i = 0; i < cur_cluster.size(); i++){
 				System.out.println("Got: " + cur_cluster.get(i));
@@ -280,9 +282,10 @@ public class GroundedAutoQuestion {
 	 * here.
 	 */
 	public static String ask_free_resp(String question, String modality){
+		System.out.println("%%%%%% IN ASK_FREE_RESP %%%%%%%");
 		//Increment the questions asked by 1 every time this method is called
 		questionCount++;
-		questions_per_label++;
+		//questions_per_label++;
 		if(question.equals("Please specify what general attribute is described by ")){
 			if(modality.equals("drop_audio"))
 				return "material";
@@ -314,7 +317,7 @@ public class GroundedAutoQuestion {
 		*/
 		if(question.equals("What/how ") || question.equals("What is the ") || question.equals("What ")){
 			HashMap<String, String> objectLabels = groundTruthTable.get(cur_cluster.get(0));
-			System.out.println("**********Label***************: " +objectLabels.get(modality));
+			System.out.println("**********Label***************: " + objectLabels.get(modality));
 			return objectLabels.get(modality);
 		}
 		/*
@@ -338,9 +341,10 @@ public class GroundedAutoQuestion {
 	 * op2 is always 'yes' or '1 or 2'
 	 */
 	public static boolean ask_mult_choice(String question, String modality, String op1, String op2){
+		System.out.println("%%%%%% IN MULT CHOICE %%%%%%%");
 		//Increment the questions asked by 1 every time this method is called
 		questionCount++;
-		questions_per_label++;
+		//questions_per_label++;
 		if(question.equals("Are all of these objects similar in ")){
 			//System.out.println("ask_multi_choice ----- ALL");
 			//search through gt for all objects in cluster. if any labels differ, return 'no' ie op1 ie true
@@ -460,9 +464,9 @@ public class GroundedAutoQuestion {
 		boolean req_sent = false;
 		Pair curContextPair = null;
 		ArrayList<Triple> value = null;
-		questions_per_label = 0;
 		while(true){
 			if(firstTime){
+				//questions_per_label = 0;
 				firstTime = false;
 				String modality_copy = modality;
 				String resp = ask_free_resp("Please specify what general attribute is described by ", modality);
@@ -628,7 +632,7 @@ public class GroundedAutoQuestion {
 		System.out.println("The number of items in LabelTable: "+labelTable.size()); 
 		try{
 			 PrintWriter writer = new PrintWriter("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/LabelTable.csv", "UTF-8");
-		     writer.println("Context,GeneralAttribute,Label,Objects,QuestionCount");
+		     writer.println("Context,GeneralAttribute,Label,Objects");
 			 for (Entry<Pair, ArrayList<Triple>> entry : labelTable.entrySet()){
 		         String context = entry.getKey().getContext();
 		         String attr = entry.getKey().getAttribute();   
@@ -644,13 +648,13 @@ public class GroundedAutoQuestion {
 		        	 for(int j=0;j<objects.size();j++){
 		        		 System.out.println("Object: " + objects.get(j));
 		        		 if(j == objects.size() - 1)
-		        			 output.append(objects.get(j) + "\",");
+		        			 output.append(objects.get(j) + "\"");
 		        		 else
 		        			 output.append(objects.get(j) + ",");
 		        	 }
-		        	 String questionCount = Integer.toString(entry.getValue().get(i).getQuestionNum());
-		        	 System.out.println("QuestionCount: " + questionCount + "\n");
-		        	 output.append(questionCount);
+		        	 //String questionCount = Integer.toString(entry.getValue().get(i).getQuestionNum());
+		        	 //System.out.println("QuestionCount: " + questionCount + "\n");
+		        	 //output.append(questionCount);
 		        	 writer.println(output);
 		          }
 		     }

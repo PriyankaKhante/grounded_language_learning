@@ -47,8 +47,8 @@ public class AttributeLearningEXP{
 	
 	public static void main(String[] args) throws Exception{
 		//behaviour-modailities to use
-		String [] rc_behavior_modalities = {"look_color"};//{"drop_audio","revolve_audio","push_audio","shake_audio", "hold_haptics","lift_haptics",
-											//"press_haptics","squeeze_haptics","grasp_size","look_color","look_shape"};
+		String [] rc_behavior_modalities = {"drop_audio","revolve_audio","push_audio","shake_audio", "hold_haptics","lift_haptics",
+											"press_haptics","squeeze_haptics","grasp_size","look_color","look_shape"};
 		
 		// Modalities that have been taken out
 		// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -60,7 +60,8 @@ public class AttributeLearningEXP{
 			computePairwiseSimilarityMatrices(rc_behavior_modalities);
 			
 			// Check if the first request is for a new cluster
-			File req = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
+			File req = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			//File req = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			while(!req.exists()){
 			  //System.out.println("Going to sleep as first file does not exist!");
 			  Thread.sleep(2000); 
@@ -162,7 +163,8 @@ public class AttributeLearningEXP{
 	public static void createEndFile(){
 		System.out.println("Creating an end program file");
 		try{
-			PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
+			//PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("/Users/Priyanka/Desktop/groundedResponse.txt", "UTF-8");
 			writer.println("EndOfAllModalities");
 			writer.close();
 		}
@@ -175,7 +177,8 @@ public class AttributeLearningEXP{
 	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
 			// Request text file code
-			PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
+			//PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("/Users/Priyanka/Desktop/groundedResponse.txt", "UTF-8");
 			writer.println(rc_behavior_modality);
 			writer.println(clusterNum);
 			// Get the cluster IDs
@@ -196,7 +199,8 @@ public class AttributeLearningEXP{
 	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
 			// Check if request.txt file exists and sleep till it does
-			File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
+			File request = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			//File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			while(!request.exists()){
 			  //System.out.println("Going to sleep as file does not exist!");
 			  Thread.sleep(2000); 
@@ -212,7 +216,8 @@ public class AttributeLearningEXP{
 
 	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
-			File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
+			File request = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			//File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			FileReader fileReader = new FileReader(request);
 	        BufferedReader bufferedReader = new BufferedReader(fileReader);
 	        String line = "";
@@ -342,7 +347,7 @@ public class AttributeLearningEXP{
 			classVals[i]=class_values.get(i);
 		
 		//output path
-		String output_path = new String("/home/users/pkhante/extracted_feature_vectors/output_files");
+		//String output_path = new String("/home/users/pkhante/extracted_feature_vectors/output_files");
 		//File output_files = new File(output_path);
 		//deleteDirectory(output_files);
 		
@@ -398,8 +403,8 @@ public class AttributeLearningEXP{
 			}
 			//System.out.println();
 			
-			String filename = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim.txt");
-			String filename_notags = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim_notags.txt");
+			//String filename = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim.txt");
+			//String filename_notags = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim_notags.txt");
 			//R_mb.writeToFile(filename);
 			//R_mb.writeToFileNoTags(filename_notags);
 			
