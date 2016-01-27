@@ -11,7 +11,7 @@ import features.ContextFeatureData;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.PrincipalComponents;
 
-public class ContextInstancesCreator {
+public class ContextInstancesCreatorForKMeans {
 
 	ContextFeatureData CD;
 	IClassLabelFunction LF;
@@ -141,9 +141,9 @@ public class ContextInstancesCreator {
 				inst.setValue(i, f[i]);
 			
 			// UNCOMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
-			inst.setValue(dataHeader.classAttribute(), class_val);
+			//inst.setValue(dataHeader.classAttribute(), class_val);
 			// COMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
-			//inst.setValue(dataHeader.numAttributes()-1, class_val);
+			inst.setValue(dataHeader.numAttributes()-1, class_val);
 			
 			return inst;
 		}
@@ -170,6 +170,6 @@ public class ContextInstancesCreator {
 		
 		dataHeader = new Instances("data", attrInfo, 0);
 		// UNCOMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
-		dataHeader.setClassIndex(dataHeader.numAttributes()-1);
+		//dataHeader.setClassIndex(dataHeader.numAttributes()-1);
 	}
 }

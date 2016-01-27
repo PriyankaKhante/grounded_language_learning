@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 import utils.CombinationGenerator;
 import features.IClassLabelFunction;
 
-public class DataLoaderCY {
+public class DataLoaderOutliers {
 
 	public ArrayList<String> getObjectsInData( ArrayList<InteractionTrial> data){
 		ArrayList<String> objects = new ArrayList<String>();
@@ -174,7 +174,7 @@ public class DataLoaderCY {
 		
 		try {
 			//BufferedReader BR = new BufferedReader(new FileReader(new File("/home/users/pkhante/extracted_feature_vectors/object_list.csv")));
-			BufferedReader BR = new BufferedReader(new FileReader(new File("/Users/Priyanka/Downloads/extracted_feature_vectors/object_list.csv")));
+			BufferedReader BR = new BufferedReader(new FileReader(new File("/Users/Priyanka/Downloads/extracted_feature_vectors/object_list_outliers.csv")));
 			
 			while (true){
 				String line = BR.readLine();
