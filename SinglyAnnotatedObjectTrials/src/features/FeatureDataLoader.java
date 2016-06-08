@@ -1,8 +1,14 @@
 package features;
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import data.InteractionTrial;
 
@@ -12,11 +18,11 @@ public class FeatureDataLoader {
 	HashMap<String,ContextFeatureData> CD_map;
 	String [] BM;
 	
-	String audio_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/audio";
-	String haptics_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/haptics";
-	String size_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/grasp_size";
-	String color_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/look_color";
-	String shape_path = "/Users/Priyanka/Downloads/extracted_feature_vectors/look_shape";
+	String audio_path = "/home/priyanka/Documents/extracted_feature_vectors/audio";
+	String haptics_path = "/home/priyanka/Documents/extracted_feature_vectors/haptics";
+	String size_path = "/home/priyanka/Documents/extracted_feature_vectors/grasp_size";
+	String color_path = "/home/priyanka/Documents/extracted_feature_vectors/look_color";
+	String shape_path = "/home/priyanka/Documents/extracted_feature_vectors/look_shape";
 	
 	public String [] getBehaviorsAndModalities(){
 		return BM;		
@@ -130,6 +136,176 @@ public class FeatureDataLoader {
 					ContextFeatureData CD_ij = this.loadContextData(bm[i]);
 					CD_map.put(CD_ij.getName(), CD_ij);
 		}
+	}
+	
+	// Loads the data from the newly created data files where objects also have the labels
+	public void loadContextsDataWithLabels(String[] bm){
+		BM=bm;
+		CD_map = new HashMap<String,ContextFeatureData>();
+		
+		for(int i = 0; i < bm.length; i++){
+			//createContextDataWithLabels(groundTruthTable, attr, bm[i], objectList);
+			ContextFeatureData CD_ij = this.loadContextDataWithLabels(bm[i]);
+			CD_map.put(CD_ij.getName(), CD_ij);
+		}
+	}
+
+	// Loads the context data and creates a new data file for objects along with their labels
+	// obj_name -> attribute_name (eg color) -> value (groundTruthTable)
+	// Need to reload this newly created file file 
+	public void createContextDataWithLabels(HashMap<String, HashMap<String, String>> groundTruthTable, String attr, String bm, ArrayList<String> objectList){
+		String readFilePath = "";
+		HashMap<String, String> object_label_table = new HashMap<String, String>();
+		
+		if (bm.equals("drop_audio"))
+			readFilePath = audio_path+"/drop_audio/dft_extracted_features.csv";
+		//else if (bm.equals("grasp_audio"))
+			//filePath = audio_path+"/grasp_audio/dft_extracted_features.csv";
+		//else if (bm.equals("hold_audio"))
+			//filePath = audio_path+"/hold_audio/dft_extracted_features.csv";
+		//else if (bm.equals("lift_audio"))
+			//filePath = audio_path+"/lift_audio/dft_extracted_features.csv";
+		//else if (bm.equals("poke_audio"))
+			//filePath = audio_path+"/poke_audio/dft_extracted_features.csv";
+		//else if (bm.equals("press_audio"))
+			//filePath = audio_path+"/press_audio/dft_extracted_features.csv";
+		else if (bm.equals("push_audio"))
+			readFilePath = audio_path+"/push_audio/dft_extracted_features.csv";
+		else if (bm.equals("revolve_audio"))
+			readFilePath = audio_path+"/revolve_audio/dft_extracted_features.csv";
+		else if (bm.equals("shake_audio"))
+			readFilePath = audio_path+"/shake_audio/dft_extracted_features.csv";
+		//else if (bm.equals("squeeze_audio"))
+			//filePath = audio_path+"/squeeze_audio/dft_extracted_features.csv";
+		//else if (bm.equals("drop_haptics"))
+			//filePath = haptics_path+"/drop_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("grasp_haptics"))
+			//filePath = haptics_path+"/grasp_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("hold_haptics"))
+			readFilePath = haptics_path+"/hold_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("lift_haptics"))
+			readFilePath = haptics_path+"/lift_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("poke_haptics"))
+			//filePath = haptics_path+"/poke_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("press_haptics"))
+			readFilePath = haptics_path+"/press_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("push_haptics"))
+			//filePath = haptics_path+"/push_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("revolve_haptics"))
+			//filePath = haptics_path+"/revolve_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("shake_haptics"))
+			//filePath = haptics_path+"/shake_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("squeeze_haptics"))
+			readFilePath = haptics_path+"/squeeze_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("grasp_size"))
+			readFilePath = size_path+"/finger_position_vector.csv";
+		else if (bm.equals("look_color"))
+			readFilePath = color_path+"/extracted_feature_colour.csv";
+		else if (bm.equals("look_shape"))
+			readFilePath = shape_path+"/extracted_feature_fpfh.csv";
+		
+		String writeFilePath = readFilePath.substring(0, readFilePath.length()-4) + "_labelled.csv";
+		
+		// Access the labels for each attribute of each object and append it to the feature vector file
+		// Object_label_Table will only contain labels for a particular attribute in each iteration
+		for(int i=0; i<objectList.size(); i++){
+			object_label_table.put(objectList.get(i), groundTruthTable.get(objectList.get(i)).get(attr));
+		}
+
+		readAndWriteDataFile(readFilePath, writeFilePath, object_label_table, objectList);
+	}
+	
+	public void readAndWriteDataFile(String readFilePath, String writeFilePath, HashMap<String, String> object_label_table, ArrayList<String> objectList){		
+		File readFile = new File(readFilePath);
+		
+		try{
+			FileReader fileReader = new FileReader(readFile);
+		    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		    PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
+		    String line = "";
+		    int line_counter = 0;
+		    int i = 0; 
+		    String label = "";
+		    
+		    // Write out the data to the file along with labels for each object
+			while((line = bufferedReader.readLine()) != null) {
+			    // Make sure that the object you fetch from the hashmap is in the same order as that of the object list
+				if(line_counter % 6 == 0){
+					// Gives us the label in the correct order
+					label = object_label_table.get(objectList.get(i));
+				    i++;
+				} 
+			    writer.println(line + "," + label);
+				line_counter++;
+			}
+			bufferedReader.close();
+			writer.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public ContextFeatureData loadContextDataWithLabels(String bm){
+		String filePath = "";
+		if (bm.equals("drop_audio"))
+			filePath = audio_path+"/drop_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("grasp_audio"))
+			//filePath = audio_path+"/grasp_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("hold_audio"))
+			//filePath = audio_path+"/hold_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("lift_audio"))
+			//filePath = audio_path+"/lift_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("poke_audio"))
+			//filePath = audio_path+"/poke_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("press_audio"))
+			//filePath = audio_path+"/press_audio/dft_extracted_features_labelled.csv";
+		else if (bm.equals("push_audio"))
+			filePath = audio_path+"/push_audio/dft_extracted_features_labelled.csv";
+		else if (bm.equals("revolve_audio"))
+			filePath = audio_path+"/revolve_audio/dft_extracted_features_labelled.csv";
+		else if (bm.equals("shake_audio"))
+			filePath = audio_path+"/shake_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("squeeze_audio"))
+			//filePath = audio_path+"/squeeze_audio/dft_extracted_features_labelled.csv";
+		//else if (bm.equals("drop_haptics"))
+			//filePath = haptics_path+"/drop_haptics/haptic_extracted_features_labelled.csv";
+		//else if (bm.equals("grasp_haptics"))
+			//filePath = haptics_path+"/grasp_haptics/haptic_extracted_features_labelled.csv";
+		else if (bm.equals("hold_haptics"))
+			filePath = haptics_path+"/hold_haptics/haptic_extracted_features_labelled.csv";
+		else if (bm.equals("lift_haptics"))
+			filePath = haptics_path+"/lift_haptics/haptic_extracted_features_labelled.csv";
+		//else if (bm.equals("poke_haptics"))
+			//filePath = haptics_path+"/poke_haptics/haptic_extracted_features_labelled.csv";
+		else if (bm.equals("press_haptics"))
+			filePath = haptics_path+"/press_haptics/haptic_extracted_features_labelled.csv";
+		//else if (bm.equals("push_haptics"))
+			//filePath = haptics_path+"/push_haptics/haptic_extracted_features_labelled.csv";
+		//else if (bm.equals("revolve_haptics"))
+			//filePath = haptics_path+"/revolve_haptics/haptic_extracted_features_labelled.csv";
+		//else if (bm.equals("shake_haptics"))
+			//filePath = haptics_path+"/shake_haptics/haptic_extracted_features_labelled.csv";
+		else if (bm.equals("squeeze_haptics"))
+			filePath = haptics_path+"/squeeze_haptics/haptic_extracted_features_labelled.csv";
+		else if (bm.equals("grasp_size"))
+			filePath = size_path+"/finger_position_vector_labelled.csv";
+		else if (bm.equals("look_color"))
+			filePath = color_path+"/extracted_feature_colour_labelled.csv";
+		else if (bm.equals("look_shape"))
+			filePath = shape_path+"/extracted_feature_fpfh_labelled.csv";
+		
+		boolean normalize = false;
+		//if (m.equals("flow"))
+		//	normalize = true;
+		
+		//if (m.equals("surf-vq"))
+		//	normalize = true;
+		
+		ContextFeatureData CD = new ContextFeatureData(bm);
+		CD.loadFromFile(filePath,normalize);
+		
+		return CD;
 	}
 	
 	public ContextFeatureData loadContextData(String bm){

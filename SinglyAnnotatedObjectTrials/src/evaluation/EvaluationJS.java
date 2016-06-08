@@ -1312,7 +1312,7 @@ public class EvaluationJS implements Summarizable {
    * @return the number of correctly classified instances
    */
   public final double correct() {
-
+    
     return m_Correct;
   }
 
@@ -1790,7 +1790,7 @@ public class EvaluationJS implements Summarizable {
     }
 
     return text.toString(); 
-  }
+  } 
 
   /**
    * Calls toMatrixString() with a default title.
