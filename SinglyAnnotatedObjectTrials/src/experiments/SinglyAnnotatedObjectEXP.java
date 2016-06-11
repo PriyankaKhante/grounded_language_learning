@@ -52,6 +52,8 @@ public class SinglyAnnotatedObjectEXP {
 			System.out.println("Now computing the ultimate max");
 			findMaxInstances(rc_behavior_modalities);
 			findUltimateMax(rc_behavior_modalities);
+			System.out.println("Producing points to plot");
+			createCSVFile(rc_behavior_modalities);
 			System.out.println("DONE!");
 		}
 		catch(Exception e){
@@ -180,7 +182,7 @@ public class SinglyAnnotatedObjectEXP {
 											//  2) Create instances of all these chosen objects
 											//  3) Build the classifier and test on the test objects 
 					
-	 				for(int k=2;k<objects.size();k++){
+	 				for(int k=2;k<=objects.size();k++){
 						// Another loop to go till the number of chosen objects
 	 					//HashMap<String, String> train_object_labels = new HashMap<String, String>();
 	 					ArrayList<String> train_objects = new ArrayList<String>();
@@ -335,9 +337,11 @@ public class SinglyAnnotatedObjectEXP {
 			File[] listOfFiles = folder.listFiles();
 			for(int i=0;i<listOfFiles.length;i++){
 				String fileName = listOfFiles[i].getName();
-				if(!fileName.equals("MaxResults") || !fileName.equals("MaxNumOfInstances.txt")){
-					String maxResult = readResultFiles(results_path + rc_behavior_modalities[g] + "/" + fileName);
-					writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MaxResults/Max" + fileName, maxResult);
+				if(!(listOfFiles[i].isDirectory())){
+					if(!fileName.equals("MaxNumOfInstances.txt")){
+						String maxResult = readResultFiles(results_path + rc_behavior_modalities[g] + "/" + fileName);
+						writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MaxResults/Max" + fileName, maxResult);
+					}
 				}
 			}
 		}
@@ -536,5 +540,53 @@ public class SinglyAnnotatedObjectEXP {
 		}
 		
 		return minResult;
+	}
+	
+	// Method to create a .csv file per context with all the data points to plot a graph
+	public static void createCSVFile(String [] rc_behavior_modalities) throws Exception{
+		// File path to store the results in 
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedResults/";
+						
+		for(int g=0;g<rc_behavior_modalities.length;g++){
+			String writeFilePath = results_path + rc_behavior_modalities[g] + "/PointsToPlot.csv";
+			File folder = new File(results_path + rc_behavior_modalities[g]);
+			File[] listOfFiles = folder.listFiles();
+			
+			try{
+				PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
+				for(int i=0;i<listOfFiles.length;i++){
+					String fileName = listOfFiles[i].getName();
+				
+					if(!(listOfFiles[i].isDirectory())){
+						if(!(fileName.equals("MaxNumOfInstances.txt")) && !(fileName.equals("MinNumOfInstances.txt")) && !(fileName.equals("PointsToPlot.csv"))){
+							FileReader fileReader = new FileReader(results_path + rc_behavior_modalities[g] + "/" + fileName);
+						    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		
+						    String line = "";
+						    int numOfInstTrainedOn = 0;
+						    float correctAccuracy = 0;
+						   
+							while((line = bufferedReader.readLine()) != null) {
+								if (line.contains("NEW ITERATION")){
+									String[] tokens = line.split(" ");
+									numOfInstTrainedOn = Integer.parseInt(tokens[4]);
+									writer.print(numOfInstTrainedOn/6 + ",");
+							    }
+							
+								 if(line.contains("Correctly Classified Instances")){
+								    String[] tokens = line.split("              ");
+								    correctAccuracy = Float.parseFloat(tokens[1].split("%")[0].trim());  
+								    writer.print(correctAccuracy + "\n");
+								 }
+							}
+						}
+					}
+				}
+				writer.close();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 }

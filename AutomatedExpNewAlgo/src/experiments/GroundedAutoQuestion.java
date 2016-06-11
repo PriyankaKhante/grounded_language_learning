@@ -28,8 +28,7 @@ import GroundedLanguage.*;
 
 public class GroundedAutoQuestion {
 	public static final String filePath = "/home/users/pkhante/Pictures/grounded_learning_images/";
-	//public static final String reqFilePath	= "/home/users/pkhante/Desktop/";
-	public static final String reqFilePath	= "/Users/Priyanka/Desktop/";
+	public static final String reqFilePath	= "/home/priyanka/Desktop/";
 	public static final String responseName	= "groundedResponse.txt";
 	public static final String requestName	= "groundedRequest.txt";
 
@@ -64,7 +63,7 @@ public class GroundedAutoQuestion {
 	 */
 	static void loadGroundTruthTable(){
 		try{
-			BufferedReader in = new BufferedReader(new FileReader("/Users/Priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
+			BufferedReader in = new BufferedReader(new FileReader("/home/priyanka/Documents/grounded_language_learning/AutoQuestionAnswer/src/etc/attributesGroundTruthTable.csv"));
 			//BufferedReader in = new BufferedReader(new FileReader("/home/users/pkhante/grounded_language_learning/AutoQuestionAnswer/src/etc/ground_truth_table.csv"));
 			String attributes[] = new String[9];
 			//grab all the attribute names. Note that these should match that is output
@@ -84,14 +83,14 @@ public class GroundedAutoQuestion {
 			while((line = in.readLine()) != null){
 				StringTokenizer tokenizer = new StringTokenizer(line,","); 
 				int columnNum = 1;
-				HashMap<String,String> objectTruthTable = new HashMap<String,String>();
+				HashMap<String,String> attrTruthTable = new HashMap<String,String>();
 
 				String name = tokenizer.nextToken();
 				while (tokenizer.hasMoreTokens()){ 
-					objectTruthTable.put(attributes[columnNum], tokenizer.nextToken());
+					attrTruthTable.put(attributes[columnNum], tokenizer.nextToken());
 					columnNum++;
 				}
-				groundTruthTable.put(name,objectTruthTable);
+				groundTruthTable.put(name,attrTruthTable);
 			}
 		 
 			System.out.println(groundTruthTable.get("red_tall_cup").get("height").toString());
@@ -195,7 +194,7 @@ public class GroundedAutoQuestion {
 		ArrayList<String> objects = new ArrayList<String>();
 		String fullPath = (reqFilePath + responseName);
 		try{
-			BufferedReader myfile = new BufferedReader(new FileReader("/Users/Priyanka/Desktop/groundedResponse.txt"));
+			BufferedReader myfile = new BufferedReader(new FileReader("//home/priyanka/Desktop/groundedResponse.txt"));
 			//BufferedReader myfile = new BufferedReader(new FileReader("/home/users/pkhante/Desktop/groundedResponse.txt"));
 			if(myfile != null){
 				while((line = myfile.readLine()) != null){
