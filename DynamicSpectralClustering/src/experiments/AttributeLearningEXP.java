@@ -60,9 +60,12 @@ public class AttributeLearningEXP{
 		
 		Collections.shuffle(Arrays.asList(rc_behavior_modalities));
 		
-		try {
+		// TAKE THIS OUT LATER: As they are computed one modality at a time later on below
+		computePairwiseSimilarityMatrices(rc_behavior_modalities);
+		
+		/*try {
 			// Check if the first request is for a new cluster
-			File req = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			File req = new File("/home/priyanka/Desktop/groundedRequest.txt");
 			//File req = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			while(!req.exists()){
 			  //System.out.println("Going to sleep as first file does not exist!");
@@ -90,7 +93,7 @@ public class AttributeLearningEXP{
 					// HACK - Compute similarity matrix and the clustering tree for each modality separately
 					firstTime = true;
 					String[] rc_behavior_modality = new String[1];
-					rc_behavior_modality[1] = rc_behavior_modalities[j];
+					rc_behavior_modality[0] = rc_behavior_modalities[j];
 					computePairwiseSimilarityMatrices(rc_behavior_modality);
 					
 					// Get clusters starting from depth = 2
@@ -114,7 +117,7 @@ public class AttributeLearningEXP{
 						
 						// Send a command to create response.txt
 						createResponseFile(rc_behavior_modalities[j], DB, result.get(i), clusterNum);*/
-					}
+					/*}
 					//System.out.println("Changing modalities");
 					result.clear();
 					DB.mergeOutlierObjectsWithClusters();
@@ -127,7 +130,7 @@ public class AttributeLearningEXP{
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 	
 	public static void selectClustersToDisplay(String rc_behavior_modality, ClusterDB DB, ObjectClusterer result){
@@ -172,7 +175,7 @@ public class AttributeLearningEXP{
 		System.out.println("Creating an end program file");
 		try{
 			//PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
-			PrintWriter writer = new PrintWriter("/Users/Priyanka/Desktop/groundedResponse.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("/home/priyanka/Desktop/groundedResponse.txt", "UTF-8");
 			writer.println("EndOfAllModalities");
 			writer.close();
 		}
@@ -186,7 +189,7 @@ public class AttributeLearningEXP{
 		try{
 			// Request text file code
 			//PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
-			PrintWriter writer = new PrintWriter("/Users/Priyanka/Desktop/groundedResponse.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter("/home/priyanka/Desktop/groundedResponse.txt", "UTF-8");
 			writer.println(rc_behavior_modality);
 			writer.println(clusterNum);
 			// Get the cluster IDs
@@ -207,7 +210,7 @@ public class AttributeLearningEXP{
 	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
 			// Check if request.txt file exists and sleep till it does
-			File request = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			File request = new File("/home/priyanka/Desktop/groundedRequest.txt");
 			//File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			while(!request.exists()){
 			  //System.out.println("Going to sleep as file does not exist!");
@@ -224,7 +227,7 @@ public class AttributeLearningEXP{
 
 	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
 		try{
-			File request = new File("/Users/Priyanka/Desktop/groundedRequest.txt");
+			File request = new File("/home/priyanka/Desktop/groundedRequest.txt");
 			//File request = new File("/home/users/pkhante/Desktop/groundedRequest.txt");
 			FileReader fileReader = new FileReader(request);
 	        BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -355,11 +358,11 @@ public class AttributeLearningEXP{
 		ArrayList<String> object_list = DL.getObjectList();
 		
 		// Generate the test and training object sets if its the first time
-		if(firstTime == true){
+		//if(firstTime == true){
 			test_objects = DL.getRandomTestObjectSet(object_list, 45);
 			objects = DL.getRandomTrainObjectSet(object_list, test_objects);
 			firstTime = false;
-		}
+		//}
 		
 		/*for(int i=0; i<test_objects.size(); i++){
 			System.out.println("Test Objects: "+test_objects.get(i));
@@ -475,7 +478,7 @@ public class AttributeLearningEXP{
 			behavior_modality_clusters.put(rc_behavior_modality, CDB);
 			
 			System.out.println("\n\nObject Clustering:\n");
-			OC.printClustering(10);
+			OC.printClustering(2);
 			
 			//deleteIDFromAllClusters("tin_can", OC);
 			//System.out.println("\n\nObject Clustering2:\n");

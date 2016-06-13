@@ -99,6 +99,7 @@ public class SinglyAnnotatedObjectEXP {
 					attrTruthTable.put(attributes[columnNum], tokenizer.nextToken());
 					columnNum++;
 				}
+	
 				groundTruthTable.put(name,attrTruthTable);
 			}
 
