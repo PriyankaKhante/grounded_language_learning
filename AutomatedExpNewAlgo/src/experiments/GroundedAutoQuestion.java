@@ -127,6 +127,10 @@ public class GroundedAutoQuestion {
 				// Compute similarity matrices for each modality
 				for (int j=0;j<rc_behavior_modalities.length; j++){
 					// HACK - Compute similarity matrix and the clustering tree for each modality separately
+					// Have a writer for results
+					File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/" + rc_behavior_modalities[j]);
+					results_filepath.mkdirs();
+					PrintWriter writer = new PrintWriter(results_filepath + "/" + new java.util.Date() + ".txt", "UTF-8");
 					firstTime = true;
 					String[] rc_behavior_modality = new String[1];
 					rc_behavior_modality[0] = rc_behavior_modalities[j];
@@ -150,7 +154,7 @@ public class GroundedAutoQuestion {
 						//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
 						
 						// The following is used to select clusters with 5 or less objects only
-						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i));
+						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i), writer);
 					}
 					
 					while(DB.checkForOutliers()){
@@ -173,11 +177,12 @@ public class GroundedAutoQuestion {
 							// Add outlier clusters to cluster Table and get each one a cluster number
 							// NOTE: OUTLIER CLUSTERS DO NOT HAVE OBJECT CLUSTERER OBJECT
 							int currentCluster = DB.addClusterToClusterTable(outliersWithClusters.get(clusterNum));
-							createResponseFileForOutliers(rc_behavior_modality[j], DB, outliersWithClusters.get(clusterNum), currentCluster);
+							createResponseFileForOutliers(rc_behavior_modality[j], DB, outliersWithClusters.get(clusterNum), currentCluster, writer);
 						}
 					}
 					//System.out.println("Changing modalities");
 					result.clear();
+					writer.close();
 					//DB.mergeOutlierObjectsWithClusters();
 					//DB.mergeClustersWithSameLabels();
 					//DB.printClustersWithObjectIDsAndLabels(rc_behavior_modalities[j]);
@@ -418,7 +423,7 @@ public class GroundedAutoQuestion {
 		return result;
 	}
 	
-	public static void selectClustersToDisplay(String rc_behavior_modality, ClusterDB DB, ObjectClusterer result){
+	public static void selectClustersToDisplay(String rc_behavior_modality, ClusterDB DB, ObjectClusterer result, PrintWriter writer){
 		if(result.getIDs().size() <= 6){
 			HashMap<Integer, ObjectClusterer> clusterNumAndOCTable = DB.getClusterNumAndOCTable();
 			for (Map.Entry<Integer, ObjectClusterer> e : clusterNumAndOCTable.entrySet()) {
@@ -427,7 +432,7 @@ public class GroundedAutoQuestion {
 				if(tempClusterIds.equals(result.getIDs())){
 					//System.out.println("New cluster: " + (Integer)e.getKey());
 					// Send the modified clusters to be displayed
-					createResponseFile(rc_behavior_modality, DB, result, (Integer)e.getKey());
+					createResponseFile(rc_behavior_modality, DB, result, (Integer)e.getKey(), writer);
 					break;
 				}
 			}
@@ -447,9 +452,9 @@ public class GroundedAutoQuestion {
 				for(int m=0; m<result.getChildren().size(); m++){
 					ObjectClusterer OCC = result.getChildren().get(m);
 					if(OCC.getIDs().size() <= 6)
-						selectClustersToDisplay(rc_behavior_modality, DB, OCC);
+						selectClustersToDisplay(rc_behavior_modality, DB, OCC, writer);
 					else{
-						selectClustersToDisplay(rc_behavior_modality, DB, OCC);
+						selectClustersToDisplay(rc_behavior_modality, DB, OCC, writer);
 					}
 				}
 			}
@@ -675,7 +680,7 @@ public class GroundedAutoQuestion {
 		}
 	}
 	
-	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
+	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter resultWriter){
 		System.out.println("Creating a response file");
 		try{
 			// Request text file code
@@ -698,13 +703,13 @@ public class GroundedAutoQuestion {
 		// Call sequence() as the response.txt file needs to be processed
 		// TODO: NEED TO ADD A LOT OF PROCESSING FROM SEQUENCE
 		// TODO: Get labels if perfect clusters. Build classifiers, etc.
-		sequence(DB, OBC);
+		sequence(DB, OBC, resultWriter);
 
 		// Wait for the request.txt file to exist
-		checkIfRequestFileExists(rc_behavior_modality, DB, OBC, clusterNum);
+		checkIfRequestFileExists(rc_behavior_modality, DB, OBC, clusterNum, resultWriter);
 	}
 	
-	public static void createResponseFileForOutliers(String rc_behavior_modality, ClusterDB DB, ArrayList<String> outlier_objs, int currentCluster){
+	public static void createResponseFileForOutliers(String rc_behavior_modality, ClusterDB DB, ArrayList<String> outlier_objs, int currentCluster, PrintWriter resultWriter){
 		System.out.println("Creating a response file for outliers");
 		try{
 			// Request text file code
@@ -724,7 +729,7 @@ public class GroundedAutoQuestion {
 		}
 		
 		// Call sequenceForOutliers() as the response.txt file needs to be processed
-		sequenceForOutliers(DB);
+		sequenceForOutliers(DB, resultWriter);
 		
 		// Wait for the request.txt file to exist
 		checkIfRequestFileExistsForOutliers(rc_behavior_modality, DB, currentCluster);
@@ -820,7 +825,7 @@ public class GroundedAutoQuestion {
 		}
 	}
 	
-	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
+	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer){
 		try{
 			System.out.println("Checking if request file exists");
 			// Check if request.txt file exists and sleep till it does
@@ -836,7 +841,7 @@ public class GroundedAutoQuestion {
 			e.printStackTrace();
 		}
 		// Read the contents of the request.txt file
-		readRequestFile(rc_behavior_modality, DB, OBC, clusterNum);
+		readRequestFile(rc_behavior_modality, DB, OBC, clusterNum, writer);
 	}
 	
 
@@ -918,7 +923,7 @@ public class GroundedAutoQuestion {
 		return true;
 	}
 	
-	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum){
+	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer){
 		try{
 			System.out.println("Reading the request file");
 			File request = new File("/home/priyanka/Desktop/groundedRequest.txt");
@@ -997,7 +1002,7 @@ public class GroundedAutoQuestion {
          					
          					if(tempClusterIds.equals(OCC.getIDs())){
          						// Send the modified clusters to be displayed
-         						createResponseFile(rc_behavior_modality, DB, OCC, (Integer)e.getKey());
+         						createResponseFile(rc_behavior_modality, DB, OCC, (Integer)e.getKey(), writer);
          						break;
          					}
          				}
@@ -1455,15 +1460,11 @@ public class GroundedAutoQuestion {
 	}
 	
 	// The following method is only called for outlier clusters
-	public static void sequenceForOutliers(ClusterDB DB){
+	public static void sequenceForOutliers(ClusterDB DB, PrintWriter writer){
 		readResponseFile();
 		boolean req_sent = false;
 		
 		try{
-			// Have a writer for results
-			File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/" + modality);
-			results_filepath.mkdirs();
-			PrintWriter writer = new PrintWriter(results_filepath + "/" + new java.util.Date() + ".txt", "UTF-8");
 			String att_from_above = "";
 			
 			String common_lab = checkForCommonLabel(global_attr);
@@ -1575,7 +1576,7 @@ public class GroundedAutoQuestion {
 			
 	}
 
-	public static void sequence(ClusterDB DB, ObjectClusterer OBC){
+	public static void sequence(ClusterDB DB, ObjectClusterer OBC, PrintWriter writer){
 		// Following commented out - Because the following case cannot happen
 		// as sequence() is called by createResponseFile()
 		/*while(!responseFileExists()){		//wait for a response with updated cluster
@@ -1591,11 +1592,6 @@ public class GroundedAutoQuestion {
 		ArrayList<Triple> value = null;
 		
 		try{
-			// Have a writer for results
-			File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/" + modality);
-			results_filepath.mkdirs();
-			PrintWriter writer = new PrintWriter(results_filepath + "/" + new java.util.Date() + ".txt", "UTF-8");
-	
 			if(firstTime){
 				//questions_per_label = 0;
 				firstTime = false;
