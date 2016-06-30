@@ -110,7 +110,7 @@ public class SinglyAnnotatedObjectEXP {
 	}
 
 	public static void commenceExperiments(String[] rc_behavior_modalities) throws Exception{
-		// Create a test and train set
+		// Get the object list
 		DataLoaderCY DL = new DataLoaderCY();
 		ArrayList<String> objects_list = DL.getObjectList();
 	
@@ -221,6 +221,7 @@ public class SinglyAnnotatedObjectEXP {
  						if(success == 0){
 	 						break;
 	 					}
+ 						
 	 					//full set of trials for training
 	 					ArrayList<InteractionTrial> train_trials = DL.generateTrials(train_objects, 6);
 						Instances train = IC.generateFullSet(train_trials);
@@ -237,7 +238,7 @@ public class SinglyAnnotatedObjectEXP {
 	 						
 	 					// Set up a remove filter to remove the nominal attributes before classifying
 	 					Remove remove = new Remove();
-	 					remove.setAttributeIndices(Integer.toString(train.numAttributes()-2));
+	 					remove.setAttributeIndices(Integer.toString(train.numAttributes()-1));
 	 					remove.setInvertSelection(false);
 	 					remove.setInputFormat(train);
 	 						

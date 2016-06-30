@@ -153,6 +153,7 @@ public class ContextInstancesCreator {
 		
 		String context_name = CD.getName();
 		for (int j = 0; j < CD.getDim(); j++){
+			System.out.println("Attr: " + context_name +"_a"+ j);
 			Attribute a = new Attribute(new String(context_name +"_a"+ j));
 			attrInfo.addElement(a);
 		}
@@ -166,6 +167,7 @@ public class ContextInstancesCreator {
 		attrInfo.addElement(classAttr);
 		
 		dataHeader = new Instances("data", attrInfo, 0);
+		System.out.println("Class: " + dataHeader.attribute(dataHeader.numAttributes()-1));
 		dataHeader.setClassIndex(dataHeader.numAttributes()-1);
 	}
 	

@@ -50,7 +50,7 @@ public class AttributeLearningEXP{
 	
 	public static void main(String[] args) throws Exception{
 		//behaviour-modailities to use
-		String [] rc_behavior_modalities = {"look_color"};
+		String [] rc_behavior_modalities = {"drop_audio"};
 				//{"drop_audio","revolve_audio","push_audio","shake_audio", "hold_haptics","lift_haptics",
 											//"press_haptics","squeeze_haptics","grasp_size","look_color","look_shape"};
 		
@@ -401,7 +401,7 @@ public class AttributeLearningEXP{
 			IC.generateHeader();
 			Instances data_mb = IC.generateFullSet(trials);
 			
-			//System.out.println(data_mb.instance(59));
+			System.out.println(data_mb.numAttributes());
 			
 			//kernel
 			PolyKernelJS K = new PolyKernelJS(data_mb,250007,1.0,false);

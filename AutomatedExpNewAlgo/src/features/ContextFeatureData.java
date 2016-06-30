@@ -14,6 +14,7 @@ public class ContextFeatureData {
 
 	ArrayList<String> tags;
 	ArrayList<double[]> feature_vectors;
+	ArrayList<String> labels;
 	
 	String behavior_modality;
 	
@@ -23,6 +24,7 @@ public class ContextFeatureData {
 		behavior_modality=bm;
 		tags = new ArrayList<String>();
 		feature_vectors = new ArrayList<double[]>();
+		labels = new ArrayList<String>();
 	}
 	
 	public void setToZeros(){
@@ -50,7 +52,16 @@ public class ContextFeatureData {
 		int index = tags.indexOf(tag_i);
 		if (index >= 0)
 			return feature_vectors.get(index);
-
+	
+		else return null;
+	}
+	
+	public String getLabel(String object, int trial_exec){
+		String tag_i = new String(object+"_"+trial_exec);
+		int index = tags.indexOf(tag_i);
+		if(index >= 0)
+			return labels.get(index);
+		
 		else return null;
 	}
 	
@@ -93,9 +104,9 @@ public class ContextFeatureData {
 				
 				String [] tokens = line.split(",");
 				
-			//	System.out.println(filename+"\t"+line+"\t"+tokens.length);
+			  //System.out.println(filename+"\t"+line+"\t"+tokens.length);
 				String tag = tokens[0];
-				double [] f_i = new double[f_dim];
+				double [] f_i = new double[f_dim-1];
 				
 				for (int i = 0; i <f_i.length; i++)
 					if (i+1 < tokens.length)
@@ -105,7 +116,9 @@ public class ContextFeatureData {
 				if (normalize && Utils.sum(f_i)>0.0)
 					Utils.normalize(f_i);
 				
+				String label = tokens[f_dim];
 				tags.add(tag);
+				labels.add(label);
 				feature_vectors.add(f_i);
 			}
 			

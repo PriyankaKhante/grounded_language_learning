@@ -13,8 +13,6 @@ import java.util.Map;
 import data.InteractionTrial;
 
 public class FeatureDataLoader {
-
-	
 	HashMap<String,ContextFeatureData> CD_map;
 	String [] BM;
 	

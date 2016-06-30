@@ -547,39 +547,6 @@ public class SpectralWEKA extends AbstractClusterer implements OptionHandler {
     this.numOfClusters = cluster[Utils.maxIndex(cluster)]+1;
   //  System.out.println("Num clusters:\t"+this.numOfClusters);
   }
-  
-  /** 
-   * METHOD ADDED BY PRIYANKA
-   * Computes the dissimilarity between all clusters after they are computed.
-   * Helpful in ranking the clusters
-   */
-  /*public double[][] computeDissimilarityMatrix(ArrayList<String> seqDB, ArrayList<ObjectClusterer> children){
-	  // declare a matrix for storing all the dissimilarity values
-	  double[][] dsm = new double[children.size()][children.size()];
-	  
-	  // get the already set-up similarity matrix
-	  double[][] sm = getSimMatrix();
-	  
-	  // Compute the weight matrix of the graph
-	  DoubleMatrix2D w;
-	  if(useSparseMatrix)
-	    w = DoubleFactory2D.sparse.make(sm.length, sm.length);
-	  else
-	    w = DoubleFactory2D.dense.make(sm.length, sm.length);
-	 
-	  for(int i = 0; i < sm.length; i++){
-	      for(int j = i; j < sm.length; j++) {
-	    	  double sim = sim_matrix[i][j];
-	          w.set(i, j, sim);
-	          w.set(j, i, sim);  
-	      }
-	  }
-	  
-	  for (int i = 0; i < children.size(); i ++){
-			children.get(i);
-	  }
-	  return dsm;
-  }*/
 
   /**
    * Returns a string describing this clusterer

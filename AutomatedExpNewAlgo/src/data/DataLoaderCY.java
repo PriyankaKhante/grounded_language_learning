@@ -79,8 +79,10 @@ public class DataLoaderCY {
 		
 		for(int i=0; i < 5; i++){
 			int test_object = r.nextInt(objects.size()-1);
-			if(!test_objects.contains(test_object))
+			if(!test_objects.contains(objects.get(test_object)))
 				test_objects.add(objects.get(test_object));
+			else
+				i--;
 		}
 		
 		return test_objects;
@@ -173,7 +175,6 @@ public class DataLoaderCY {
 		ArrayList<String> objects = new ArrayList<String>();
 		
 		try {
-			//BufferedReader BR = new BufferedReader(new FileReader(new File("/home/users/pkhante/extracted_feature_vectors/object_list.csv")));
 			BufferedReader BR = new BufferedReader(new FileReader(new File("/home/priyanka/Documents/extracted_feature_vectors/object_list.csv")));
 			
 			while (true){

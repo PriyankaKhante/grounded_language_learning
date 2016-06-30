@@ -31,6 +31,8 @@ public class ClusterDB {
 	HashMap<String, String> outlierObjectLabels;
 	
 	HashMap<String, String> clustersToBeAdded;
+	
+	ArrayList<String> outlierObjects;
  	
 	public ClusterDB(ObjectClusterer OC){
 		this.OC = OC;
@@ -40,6 +42,51 @@ public class ClusterDB {
 		clusterNumAndOCTable = new HashMap<Integer, ObjectClusterer>();
 		outlierObjectLabels = new HashMap<String, String>();
 		clustersToBeAdded = new HashMap<String, String>();
+		outlierObjects = new ArrayList<String>();
+	}
+	
+	// Adds the outlier clusters to the cluster table and returns its clusterNum
+	public int addClusterToClusterTable(ArrayList<String> outlier_objs){
+		// get max cluster number in the table
+		int max = Integer.MIN_VALUE;
+		for(int clusterNum : clusterTable.keySet()){
+			if(clusterNum > max){
+				max = clusterNum;  
+			}	
+		}
+		
+		clusterTable.put(max+1, outlier_objs);
+		
+		return max+1;
+	}
+	
+	// This method adds the outlier objects to a list
+	public void setOutlierObject(String outlier_object){
+		outlierObjects.add(outlier_object);
+	}
+	
+	public ArrayList<String> getOutlierObjects(){
+		return outlierObjects;
+	}
+	
+	public void clearOutlierObjectsList(){
+		outlierObjects.clear();
+	}
+	
+	public boolean checkForOutliers(){
+		if(outlierObjects.size() != 0)
+			return true;
+		else
+			return false;
+	}
+	
+	// This method prints the outliers in a modality at any given point of time
+	public void printOulierList(){
+		for (Map.Entry<String, String> entry : outlierObjectLabels.entrySet()) {
+		    String object = entry.getKey().toString();
+		    String label = entry.getValue();
+		    System.out.println("Outlier object: " + object + " with label: " + label);
+		}
 	}
 	
 	// Method to merge outlier objects with the clusters depending on their labels
