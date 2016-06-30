@@ -35,6 +35,8 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 /* This class uses cluster data as input to facilitate automated question answering
+ * as per the algorithm proposed by Priyanka. A result file is outputed which keeps 
+ * track of questions asked after every iteration of testing. 
  * A provided grounded truth table will allow for lookups for a corresponding question
  *
  * output is a table:
@@ -149,7 +151,6 @@ public class GroundedAutoQuestion {
 					ClusterDB DB = behavior_modality_clusters.get(rc_behavior_modalities[j]);
 					//System.out.println("Result size: "+result.size());
 					// Do the following for each cluster starting at depth = 2
-					//for(int i=0; i<result.size(); i++){
 					for(int i=0; i<result.size(); i++){
 						//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
 						
@@ -183,9 +184,6 @@ public class GroundedAutoQuestion {
 					//System.out.println("Changing modalities");
 					result.clear();
 					writer.close();
-					//DB.mergeOutlierObjectsWithClusters();
-					//DB.mergeClustersWithSameLabels();
-					//DB.printClustersWithObjectIDsAndLabels(rc_behavior_modalities[j]);
 				}
 				//System.out.println("Done with all modalities");
 
@@ -238,6 +236,7 @@ public class GroundedAutoQuestion {
 		IC.generateHeader();
 				
 		//full set of trials for training	
+		// THE FOLLOWING CODE IS TO CLASSIFY EACH INSTANCE SEPARATELY
 		/*ArrayList<InteractionTrial> train_trials = DL.generateTrials(outlier_objects, 6);
 		
 		Instances train = IC.generateFullSet(train_trials);
@@ -272,6 +271,7 @@ public class GroundedAutoQuestion {
 			
 			// Print out the clusters
 		    // As we preserved the order of the instances, we can get which object they belong to
+			// THE FOLLOWING CODE IS TO CLASSIFY EACH INSTANCE SEPARATELY
 			/*for(int objectNum = 0; objectNum<outlier_objects.size(); objectNum++) {
 				String objectName = outlier_objects.get(objectNum);
 				HashMap<Integer, Integer> clusterNumCounts = new HashMap<Integer, Integer>();
@@ -400,10 +400,6 @@ public class GroundedAutoQuestion {
 		ArrayList<ObjectClusterer> result = new ArrayList<ObjectClusterer>(); 
 		result = getClustersAtDepth(OC, clevel, depth, result);
 		
-		/*for(int i=0;i<result.size(); i++){
-			System.out.println("Size: "+ result.get(i).getIDs().size() + "ClusterIDs: " + result.get(i).getIDs());
-		}*/
-		
 		return result;
 	}
 	
@@ -430,22 +426,10 @@ public class GroundedAutoQuestion {
 				ArrayList<String> tempClusterIds = e.getValue().getIDs();
 					
 				if(tempClusterIds.equals(result.getIDs())){
-					//System.out.println("New cluster: " + (Integer)e.getKey());
-					// Send the modified clusters to be displayed
 					createResponseFile(rc_behavior_modality, DB, result, (Integer)e.getKey(), writer);
 					break;
 				}
 			}
-			// Get the clusterNumber
-			//ArrayList<String> clusterids = result.getIDs();
-			//String listString = "";
-			//for(String clusterIDs : clusterids){
-				//listString += clusterIDs + ",";
-			//}
-			//int clusterNum = DB.getClusterNumber(listString);
-			
-			// Send a command to create response.txt
-			//createResponseFile(rc_behavior_modality, DB, result, clusterNum);
 		}
 		else{
 			if(result.getChildren().size() != 0){
@@ -532,11 +516,6 @@ public class GroundedAutoQuestion {
 		FeatureDataLoader FDL = new FeatureDataLoader();
 		FDL.loadContextsDataWithLabels(rc_behavior_modalities);
 		
-		//output path
-		//String output_path = new String("/home/users/pkhante/extracted_feature_vectors/output_files");
-		//File output_files = new File(output_path);
-		//deleteDirectory(output_files);
-		
 		for (int b = 0; b<rc_behavior_modalities.length; b++){
 			//System.out.print("Computing similarity for context:\t["+rc_behavior_modalities[b]+"]\n\t");
 			
@@ -612,13 +591,7 @@ public class GroundedAutoQuestion {
 					//for each instance pair, compute similarity
 					for (int a = 0; a < data_i.numInstances();a++){
 						for (int z= 0; z < data_j.numInstances();z++){		
-							
 							double k_az = K.evaluate(data_i.instance(a), data_j.instance(z));
-							
-							//System.out.println("Object i: "+data_i.instance(a).toString());
-							//System.out.println("Object j: "+data_j.instance(z).toString());
-							//System.out.println("k_az:" + k_az);
-							
 							v+=k_az;
 							c++;
 						}
@@ -628,17 +601,8 @@ public class GroundedAutoQuestion {
 		
 					R_mb.setEntry(i, j, v);
 					R_mb.setEntry(j, i, v);
-					
-					//System.out.print(".");
 				}
 			}
-			//System.out.println();
-			
-			//String filename = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim.txt");
-			//String filename_notags = new String(output_path+"/"+rc_behavior_modalities[b]+"_sim_notags.txt");
-			//R_mb.writeToFile(filename);
-			//R_mb.writeToFileNoTags(filename_notags);
-			
 			spectralClustering(R_mb, objects, rc_behavior_modalities[b]);
 		}
 	}
@@ -647,8 +611,6 @@ public class GroundedAutoQuestion {
 		try {
 			R_mb.makeSymetric();
 			R_mb.setDiagonal(1.0);      
-			//System.out.println("\nSim Object Matrix as input to spectral clustering:");
-			//R_mb.printDebug();
 			
 			ObjectClusterer OC = new ObjectClusterer();
 			OC.setAlpha(1.0);
@@ -671,9 +633,6 @@ public class GroundedAutoQuestion {
 			//System.out.println("\n\nObject Clustering:\n");
 			//OC.printClustering(2);
 			
-			//deleteIDFromAllClusters("tin_can", OC);
-			//System.out.println("\n\nObject Clustering2:\n");
-			//OC.printClustering(10);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -684,7 +643,6 @@ public class GroundedAutoQuestion {
 		System.out.println("Creating a response file");
 		try{
 			// Request text file code
-			//PrintWriter writer = new PrintWriter("/home/users/pkhante/Desktop/groundedResponse.txt", "UTF-8");
 			PrintWriter writer = new PrintWriter("/home/priyanka/Desktop/groundedResponse.txt", "UTF-8");
 			writer.println(rc_behavior_modality);
 			writer.println(clusterNum);
@@ -701,8 +659,6 @@ public class GroundedAutoQuestion {
 		}
 		
 		// Call sequence() as the response.txt file needs to be processed
-		// TODO: NEED TO ADD A LOT OF PROCESSING FROM SEQUENCE
-		// TODO: Get labels if perfect clusters. Build classifiers, etc.
 		sequence(DB, OBC, resultWriter);
 
 		// Wait for the request.txt file to exist
@@ -794,16 +750,7 @@ public class GroundedAutoQuestion {
 	     			DB.clearInvertedClusterTable();
 	     			DB.createInvertedClusterTable();
         		}
-				// Get clusterNumber
-				/*ArrayList<String> clusterids1 = OBC.getIDs();
-				String listString1 = "";
-				for(String clusterIDs : clusterids1){
-					listString1 += clusterIDs + ",";
-				}
-				int clusterNum1 = DB.getClusterNumber(listString1);*/
-			    //System.out.println("ClusterNum1: " + clusterNum1);
-				// Ask for a new cluster to be displayed
-				//createResponseFile(rc_behavior_modality, DB, OBC, clusterNum1);
+			
 				writeRequestFile(1, cluster_label);
         	}
         	
@@ -963,16 +910,6 @@ public class GroundedAutoQuestion {
 	     			DB.clearInvertedClusterTable();
 	     			DB.createInvertedClusterTable();
         		}
-				// Get clusterNumber
-				/*ArrayList<String> clusterids1 = OBC.getIDs();
-				String listString1 = "";
-				for(String clusterIDs : clusterids1){
-					listString1 += clusterIDs + ",";
-				}
-				int clusterNum1 = DB.getClusterNumber(listString1);
-			    //System.out.println("ClusterNum1: " + clusterNum1);*/
-				// Ask for a new cluster to be displayed
-				//createResponseFile(rc_behavior_modality, DB, OBC, clusterNum1);
 				writeRequestFile(1, cluster_label);
         	}
         	
@@ -1065,10 +1002,9 @@ public class GroundedAutoQuestion {
 					if(!(line.equals("EndOfAllModalities"))){
 						if(lineNum == 0){
 							modality = line;
-							//System.out.println("Modality: " + modality);
+
 							int first = modality.compareTo(old_mod);
-							//System.out.println("Old_mod: " + old_mod);
-							//System.out.println("Value of first: " + first);
+
 							if(first != 0){
 								firstTime = true;
 								//Store the previous questionCount and reset it for the next context
@@ -1165,155 +1101,16 @@ public class GroundedAutoQuestion {
 			if(modality.equals("look_shape"))
 				return "shape";
 		}
-		/*
-		* Here its being asked what label is held by this attribute (modality) by the group of objects
-		* or asking what label is held by the single outlier. In both cases the first object in the group
-		* has the desired label
-		*/
-		
-		if(question.equals("What/how ") || question.equals("What is the ") || question.equals("What ")){
-			HashMap<String, String> objectLabels = groundTruthTable.get(cur_cluster.get(0));
-			System.out.println("**********Label***************: " + objectLabels.get(modality));
-			return objectLabels.get(modality);
-		}
-		/*
-		 * Here we give the outlier names. presupposes that the outliers list has been set by a previous question
-		 */
-		/*if(question.equals("Please specify the names of the outlier(s), separated by spaces")){
-			String result = "";
-			for(int i = 0; i < outliers.size(); i++){
-				result += outliers.get(i);
-				if( i < outliers.size() - 1)
-					result += " ";
-			}
-			System.out.println("**********OUTLIERS***************: " +outliers.toString());
-			return result;
-		}*/
 		return null;
-	}
-	/*
-	 * Returns one of the options given. 
-	 * op1 is always 'no' or '>2'.
-	 * op2 is always 'yes' or '1 or 2'
-	 */
-	public static boolean ask_mult_choice(String question, String modality, String op1, String op2){
-		System.out.println("%%%%%% IN MULT CHOICE %%%%%%%");
-		//Increment the questions asked by 1 every time this method is called
-		questionCount++;
-		//questions_per_label++;
-		/*if(question.equals("Are all of these objects similar in ")){
-			//System.out.println("ask_multi_choice ----- ALL");
-			//search through gt for all objects in cluster. if any labels differ, return 'no' ie op1 ie true
-			String label = "";
-
-			for(int i =0; i < cur_cluster.size(); i++){
-				HashMap<String,String> objectEntry = groundTruthTable.get(cur_cluster.get(i));
-				if(i == 0)
-					label = objectEntry.get(modality);
-				
-				else
-					if(!label.equals(objectEntry.get(modality)))
-						return true;						
-			}
-			//System.out.println("All of them have the same label!");
-		}*/
-		if(question.equals("Are most of these objects similar in ")){
-			//System.out.println("ask_multi_choice ----- MOST");
-			//search through gtt. if more than half of the labels differ in 'modality' return 'yes' ie op2 ie false
-			String label;
-			HashMap<String, Integer> frequencyList = new HashMap<String,Integer>();
-			for(int i =0; i < cur_cluster.size(); i++){
-				HashMap<String,String> objectEntry = groundTruthTable.get(cur_cluster.get(i));
-				label = objectEntry.get(modality);
-				if(!frequencyList.containsKey(label))
-					frequencyList.put(label, 1);
-				else{
-					int lastFreq = frequencyList.get(label);
-					frequencyList.put(label, lastFreq+1);
-				}
-			}
-			int max = Integer.MIN_VALUE;
-			for(String freqLabel : frequencyList.keySet()){
-				if(frequencyList.get(freqLabel) > max){
-					max = frequencyList.get(freqLabel);
-				}
-			}
-			if(max >= cur_cluster.size())
-				return false;
-			return true;
-		}
-		if(question.equals("How many objects don't fit the ")){
-			//System.out.println("Asking for the number of outliers");
-			//search through gtt. if more 2 objects don't fit, return 'no' ie op1 ie true
-			//AND set up the outlier list to include these objects
-			String label;
-			HashMap<String, ArrayList<String> > frequencyList = new HashMap<String,ArrayList<String> >();
-			for(int i = 0; i < cur_cluster.size(); i++){
-				HashMap<String,String> objectEntry = groundTruthTable.get(cur_cluster.get(i));
-				label = objectEntry.get(modality);
-
-				//System.out.println("&&&&&Current cluster: " + cur_cluster.get(i));
-				//System.out.println("label&&&&: "+label);
-
-				if(!frequencyList.containsKey(label)){
-					ArrayList<String> newObj = new ArrayList<String>();
-					newObj.add(cur_cluster.get(i));
-					frequencyList.put(label, newObj);
-				}
-				
-				else{
-					ArrayList<String> oldObjs = frequencyList.get(label);
-					oldObjs.add(cur_cluster.get(i));
-					frequencyList.put(label, oldObjs);
-				}
-			}
-			
-			/*for (Map.Entry<String, ArrayList<String> > name:frequencyList.entrySet()){
-	            String key = name.getKey();
-	            int value = name.getValue().size();  
-	            System.out.println(key + " : " + value);  
-			} */
-			
-			//Return true if more than 2 outliers --> If you have more than 3 labels, then have to recluster
-			if(frequencyList.size() > 3)
-				return true;
-			else{      // Has only 2 outliers or less
-				//find maximum labels, objects
-				int max = Integer.MIN_VALUE;
-				String max_label = ""; 					//tracks the location of the 'bulk' label
-				
-				// Get the maximum number of objects for that max_label
-				for(Map.Entry<String, ArrayList<String> > freqLabel : frequencyList.entrySet()){
-					if(freqLabel.getValue().size() > max){
-						max = freqLabel.getValue().size();  
-						max_label = freqLabel.getKey();
-					}	
-				}
-				
-				//System.out.println("Max_label: "+max_label);
-				//finally, answer the question
-				/*outliers.clear();
-		
-				for(Map.Entry<String, ArrayList<String> > freqLabel : frequencyList.entrySet()){
-					if(!freqLabel.getKey().equals(max_label)){
-						for(int k = 0; k < freqLabel.getValue().size(); k++)
-							outliers.add(freqLabel.getValue().get(k));
-					}
-				}
-				System.out.println("******Added outliers********: " + outliers.size());*/
-			}
-		}
-		return false;
 	}
 	
 	// A method which checks the cluster and returns if its perfect or imperfect (with outliers) 
 	public static String checkForCommonLabel(String attr) {
-		// Return answer - "All same", "Outliers", "Not same (Recluster)"
+		// Return answer - "All same", "Outliers", "Recluster"
 		
 		HashMap<String, String> cluster_labels = new HashMap<String, String> ();
 		HashMap<String, Integer> label_count = new HashMap<String, Integer> ();
 		
-		//System.out.println("Cur_cluster: (In check for common label)" + cur_cluster.size());
 		for(int i = 0; i < cur_cluster.size(); i++){
 			HashMap<String,String> objectEntry = groundTruthTable.get(cur_cluster.get(i));
 			cluster_labels.put(cur_cluster.get(i), objectEntry.get(attr));
@@ -1328,8 +1125,6 @@ public class GroundedAutoQuestion {
 				label_count.put(entry.getValue(), count + 1);
 			}
 		}
-		
-		//System.out.println("Label count: " + label_count.size());
 		
 		// If there are 3 labels means that there can be 2 or more outliers
 		if(label_count.size() <= 3 && label_count.size() != 1){
@@ -1556,9 +1351,6 @@ public class GroundedAutoQuestion {
 				writeRequestFile(0,outlier_objs,att_from_above);			//send request for deleting outliers
 				req_sent = true;
 				
-				// Wait for the request.txt file to exist
-				//checkIfRequestFileExists(modality, DB, OBC, clusterNum);
-				
 				//get next cluster
 				if(!req_sent){
 					writeRequestFile(1,att_from_above);
@@ -1577,15 +1369,6 @@ public class GroundedAutoQuestion {
 	}
 
 	public static void sequence(ClusterDB DB, ObjectClusterer OBC, PrintWriter writer){
-		// Following commented out - Because the following case cannot happen
-		// as sequence() is called by createResponseFile()
-		/*while(!responseFileExists()){		//wait for a response with updated cluster
-			try {
-				    Thread.sleep(100);
-				} catch(InterruptedException ex) {
-				    Thread.currentThread().interrupt();
-				}
-		}*/
 		readResponseFile();
 		String att_from_above = "";
 		boolean req_sent = false;
@@ -1713,122 +1496,8 @@ public class GroundedAutoQuestion {
 				
 				writeRequestFile(2, att, att_from_above); 	//recluster
 				req_sent = true;
-				
-				// Wait for the request.txt file to exist
-				//checkIfRequestFileExists(modality, DB, OBC, clusterNum);
 			}
-			/*else{
-				if(cur_cluster.size() <= 3 || ask_mult_choice("Are most of these objects similar in ", clusterAttribute, "No", "Yes")){
-					boolean mult_choice;
-					mult_choice = ask_mult_choice("How many objects don't fit the ", clusterAttribute, ">2", "1 or 2");
-					if(!mult_choice){
-						ArrayList<String> outliers = splitString(
-								ask_free_resp("Please specify the names of the outlier(s), separated by spaces", ""));
-						ArrayList<String> full_cluster = (ArrayList<String>) cur_cluster.clone();
-						System.out.println("Full_cluster at beginning: " + full_cluster.toString());
-						String outlier_name = null;
-						
-						for(int i = 0; i < outliers.size(); i++){
-							outlier_name = outliers.get(i);
-							full_cluster.remove(outlier_name);
-							System.out.println("Full cluster after removing outlier: " + full_cluster.toString());
-							cur_cluster.clear();
-							cur_cluster.add(outlier_name);
-							System.out.println("Full cluster later on: " + full_cluster);
-							System.out.println("Current cluster later on: " + cur_cluster);
-							
-							String answer = ask_free_resp("What is the ", clusterAttribute);
-							System.out.println("Label of the outlier: "+answer);
-							boolean extant = false;
-							//store answer as label
-							ArrayList<Triple> values = labelTable.get(curContextPair); //overwriting here?
-							
-							for(int j = 0; j < values.size() && extant == false; j++){
-								if(values.get(j).getLabel().equals(answer)){ //label exists in table. Add it to list of objects
-									Triple temp = values.remove(j);					//must remove element, to update it, then add it back
-									ArrayList<String> objects = temp.getObjects();
-									objects.add(outlier_name);
-									Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
-									values.add(update);								//finally add back the updated triple
-									extant = true;
-									System.out.println("Values after updating a label: " + values.size());
-								}
-							}
-							labelTable.put(curContextPair, values);
-							
-							if(extant == false){											//label doesn't exist in table. Create it
-								Triple labelTriple = new Triple(answer, cur_cluster, questions_per_label);
-								//add to list or put in table??
-								values.add(labelTriple);
-								labelTable.put(curContextPair, values);
-								System.out.println("Values after adding a new label: " + values.size());
-								extant = true;
-							}
-
-							writeRequestFile(0,outlier_name,answer);			//send request to Java prog
-							while(!responseFileExists()){						//wait for Java to respond with updated cluster
-								try {
-									    Thread.sleep(100);
-									} catch(InterruptedException ex) {
-									    Thread.currentThread().interrupt();
-									}
-							}
-							readResponseFile();
-							try {
-								    Thread.sleep(1000);
-								} catch(InterruptedException ex) {
-								    Thread.currentThread().interrupt();
-								} 											//waits for the cv window to update
-						}*/
-						/* Here I need to grab the label for the attribute. Need to check label table for:
-						 * the existance of the attribute. If it exists, add the label to the vector of labels already seen
-						 * Otherwise, add an entry pair <feature, vec:labels>
-						 */
-						
-						/*cur_cluster = full_cluster; //make the current cluster the previous current cluster minus the outliers
-						System.out.println("Full cluster after removing outliers: " + full_cluster.toString());
-						att_from_above = ask_free_resp("What " , clusterAttribute);
-						System.out.println("Att_From_above: " + att_from_above);
-						boolean extant = false;
-						//store answer as label
-						ArrayList<Triple> values = labelTable.get(curContextPair); //overwriting here?
-						for(int j = 0; j < values.size() && extant == false; j++){
-							if(values.get(j).getLabel().equals(att_from_above)){ //label exists in table. Add it to list of objects
-								Triple temp = values.remove(j);					//must remove element, to update it, then add it back
-								System.out.println("There is a matching label");
-								ArrayList<String> objects = temp.getObjects();
-								for(int k = 0; k<cur_cluster.size(); k++){
-									objects.add(cur_cluster.get(k));
-								}
-								Triple update = new Triple(temp.getLabel(),objects,temp.getQuestionNum()+questions_per_label);
-								values.add(update);								//finally add back the updated triple
-								extant = true;
-							}
-						}
-						labelTable.put(curContextPair, values);
-						
-						if(extant == false){											//label doesn't exist in table. Create it
-							System.out.println("There is NO matching label");
-							Triple labelTriple = new Triple(att_from_above, cur_cluster, questions_per_label);
-							//add to list or put in table??
-							values.add(labelTriple);
-							labelTable.put(curContextPair, values);
-							extant = true;
-						}
-					}
-					else{
-						writeRequestFile(2, att_from_above, att_from_above); 	//recluster
-						req_sent = true;
-					}
-				}
-				else{
-					writeRequestFile(2, att_from_above, att_from_above); 		//recluster
-					req_sent = true;
-				}
-			}
-			
-			System.out.println("Waiting...");
-*/
+	
 			//get next cluster
 			if(!req_sent){
 				writeRequestFile(1,att_from_above);
@@ -1841,9 +1510,9 @@ public class GroundedAutoQuestion {
 	
 	// Method to build classifiers with the clusters labeled so far and test them on test objects
 	// Obtain the labels so far from the label_table
-	// TODO: This method should add labels to the instances -> create files with data with labels
+	// This method adds labels to the instances -> create files with data with labels
 	// And then build classifiers
-	// Create decision trees and test on test object and output accuracy to a file. Don't create a new file unless its a different modality
+	// Create decision trees and test on test object and output accuracy to a file. Don't create a new file unless its a different modality.
 	public static void buildClassifierAndTest(Pair curContextPair, String modality, PrintWriter writer){
 		System.out.println("In build classifier and test");
 		
