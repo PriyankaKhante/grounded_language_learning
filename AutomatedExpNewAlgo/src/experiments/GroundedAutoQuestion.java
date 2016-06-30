@@ -74,6 +74,9 @@ public class GroundedAutoQuestion {
 	static HashMap<String, Integer> questionCountPerContext = new HashMap<String, Integer>();
 	static HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
 	static int questionCount = 0;
+	
+	// THE FOLLOWING IS NOT USED FOR THIS EXPERIMENT. 
+	// IT IS KEPT BECAUSE SOME CLASSES NEED IT AS A PARAMETER
     static int questions_per_label = 0;
     
     static HashMap<String, ClusterDB> behavior_modality_clusters = new HashMap<String, ClusterDB>();
@@ -354,6 +357,9 @@ public class GroundedAutoQuestion {
 	
 	// Check the labels of outliers from groundtruth and return the number of categories within them
 	public static int deduceCategoriesOfOutliers(ArrayList<String> outlier_objects, String modality){
+		// The user will have to answer how many categories exist in the outlier objects
+		questionCount++;
+		System.out.println("Question Count in Deduce Categories for Outliers: " + questionCount);
 		String attr = getAttributeForModality(modality);
 		ArrayList<String> outlier_labels = new ArrayList<String> ();
 		for(int i=0;i<outlier_objects.size();i++){
@@ -1074,8 +1080,8 @@ public class GroundedAutoQuestion {
 	public static String ask_free_resp(String question, String modality){
 		System.out.println("%%%%%% IN ASK_FREE_RESP %%%%%%%");
 		//Increment the questions asked by 1 every time this method is called
-		questionCount++;
-		//questions_per_label++;
+		// THE FOLLOWING IS COMMENTED OUT -> in comparison to the first experiment, where this question was not counted
+		//questionCount++;
 		if(question.equals("For the forthcoming clusters, what feature/attribute of the object ")){
 			System.out.println("Modality here" + modality);
 			if(modality.equals("drop_audio"))
@@ -1280,6 +1286,10 @@ public class GroundedAutoQuestion {
 					labelTable.put(globalContextPair,temp);
 					System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString() + "with label: " + att_from_above);
 			
+					// increment question count as a cluster was labelled
+					questionCount++;
+					System.out.println("Question Count: " + questionCount);
+					
 					// Build classifier with labels obtained and test on test objects 
 					if(labelTable.get(globalContextPair).size() > 1)
 						buildClassifierAndTest(globalContextPair, modality, writer);
@@ -1344,10 +1354,15 @@ public class GroundedAutoQuestion {
 				
 				System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString() + "with label: " + att_from_above);
 				System.out.println("Label table size: " + labelTable.get(globalContextPair).size());
+				
+				// increment question count as a cluster was labelled
+				questionCount++;
+				System.out.println("Question Count: " + questionCount);
+				
 				// Build classifier with labels obtained and test on test objects 
 				if(labelTable.get(globalContextPair).size() > 1)
 					buildClassifierAndTest(globalContextPair, modality, writer);
-
+				
 				writeRequestFile(0,outlier_objs,att_from_above);			//send request for deleting outliers
 				req_sent = true;
 				
@@ -1376,7 +1391,6 @@ public class GroundedAutoQuestion {
 		
 		try{
 			if(firstTime){
-				//questions_per_label = 0;
 				firstTime = false;
 				String modality_copy = modality;
 				String resp = ask_free_resp("For the forthcoming clusters, what feature/attribute of the object ", modality);
@@ -1415,6 +1429,10 @@ public class GroundedAutoQuestion {
 					labelTable.put(globalContextPair,temp);
 					System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString() + "with label: " + att_from_above);
 			
+					// increment question count as a cluster was labelled
+					questionCount++;
+					System.out.println("Question Count: " + questionCount);
+					
 					// Build classifier with labels obtained and test on test objects 
 					if(labelTable.get(globalContextPair).size() > 1)
 						buildClassifierAndTest(globalContextPair, modality, writer);
@@ -1479,10 +1497,15 @@ public class GroundedAutoQuestion {
 				
 				System.out.println("Cur_Cluster when all labels are same: " + cur_cluster.toString() + "with label: " + att_from_above);
 				System.out.println("Label table size: " + labelTable.get(globalContextPair).size());
+				
+				// increment question count as a cluster was labelled
+				questionCount++;
+				System.out.println("Question Count: " + questionCount);
+				
 				// Build classifier with labels obtained and test on test objects 
 				if(labelTable.get(globalContextPair).size() > 1)
 					buildClassifierAndTest(globalContextPair, modality, writer);
-
+				
 				writeRequestFile(0,outlier_objs,att_from_above);			//send request for deleting outliers
 				req_sent = true;
 				
@@ -1577,8 +1600,7 @@ public class GroundedAutoQuestion {
 			ArrayList<InteractionTrial> train_trials = DL.generateTrials(training_objs, 6);
 			
 			Instances train = IC.generateFullSet(train_trials);
-			System.out.println("Training instances: " + train.numInstances());
-				
+
 			// Set up a remove filter to remove the nominal attributes before classifying
 			Remove remove = new Remove();
 			remove.setAttributeIndices(Integer.toString(train.numAttributes()-1));
@@ -1602,9 +1624,16 @@ public class GroundedAutoQuestion {
 			// Test on the test objects and store the accuracy
 			ArrayList<InteractionTrial> test_trials = DL.generateTrials(test_objects, 6);		 						
 			Instances test = IC.generateFullSet(test_trials);
+			
+			// Print out the output to console
 			System.out.println("Training objects: " + training_objs.toString());
 			System.out.println("Test objects: " + test_objects.toString());
 			System.out.println("\t\tNEW ITERATION: Train on "+train.numInstances()+" and test on "+ test.numInstances());
+			
+			// Write output to file
+			writer.println("Training objects: " + training_objs.toString());
+			writer.println("Test objects: " + test_objects.toString());
+			writer.println("Question Count: " + questionCount);
 			writer.println("\t\tNEW ITERATION: Train on "+train.numInstances()+" and test on "+ test.numInstances());
 						
 			EV.evaluateModel(C_boost, test);
