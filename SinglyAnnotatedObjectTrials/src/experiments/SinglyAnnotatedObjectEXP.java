@@ -36,7 +36,7 @@ public class SinglyAnnotatedObjectEXP {
 	public static void main(String[] args) {
 		//behaviour-modailities to use
 		String [] rc_behavior_modalities = {"drop_audio"};
-//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
+				//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
 					//"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
 				
 		// Modalities that have been taken out
@@ -126,7 +126,6 @@ public class SinglyAnnotatedObjectEXP {
 		// Create the files which have the object data along with the labels
 		for(int g=0;g<rc_behavior_modalities.length;g++)
 			FDL.createContextDataWithLabels(groundTruthTable, getAttributeForModality(rc_behavior_modalities[g]) , rc_behavior_modalities[g], objects_list);
-		
 		
 		for(int g=0;g<rc_behavior_modalities.length;g++){
 			System.out.println("Behaviour Modality:  " + rc_behavior_modalities[g]);
@@ -324,6 +323,7 @@ public class SinglyAnnotatedObjectEXP {
 	    
 	    for(int i=0;i<10;i++){
 	    	int num = generator.nextInt();
+	    	System.out.println("Seed: " + num);
 	    	seeds_array[i] = num;
 	    }
 	    return seeds_array;
@@ -343,6 +343,8 @@ public class SinglyAnnotatedObjectEXP {
 				if(!(listOfFiles[i].isDirectory())){
 					if(!fileName.equals("MaxNumOfInstances.txt")){
 						String maxResult = readResultFiles(results_path + rc_behavior_modalities[g] + "/" + fileName);
+						File maxResultFilePath = new File(results_path + rc_behavior_modalities[g] + "/MaxResults");
+						maxResultFilePath.mkdirs();
 						writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MaxResults/Max" + fileName, maxResult);
 					}
 				}

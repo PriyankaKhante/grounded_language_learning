@@ -1,5 +1,6 @@
 package experiments;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
 import java.util.HashMap;
@@ -54,8 +55,8 @@ public class GroundedAutoQuestion {
 	
 	//behaviour-modailities to use
 	static String [] rc_behavior_modalities = {"drop_audio"};
-		//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
-			//			"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
+			//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
+				//"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
 					
 	// Modalities that have been taken out
 	// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -72,11 +73,11 @@ public class GroundedAutoQuestion {
 	static Instances data;
 	static HashMap<String, HashMap<String, String>> groundTruthTable = new HashMap<String, HashMap<String, String>>();
 	static HashMap<String, Integer> questionCountPerContext = new HashMap<String, Integer>();
-	static HashMap<Pair, ArrayList<Triple> > labelTable = new HashMap<Pair, ArrayList<Triple> >();
+	static HashMap<Pair, ArrayList<Triple> > labelTable;
 	static int questionCount = 0;
 	
-	// THE FOLLOWING IS NOT USED FOR THIS EXPERIMENT. 
-	// IT IS KEPT BECAUSE SOME CLASSES NEED IT AS A PARAMETER
+	// questions_per_label IS NOT USED FOR THIS EXPERIMENT. 
+	// IT IS KEPT BECAUSE SOME CLASSES NEED IT AS A PARAMETER.
     static int questions_per_label = 0;
     
     static HashMap<String, ClusterDB> behavior_modality_clusters = new HashMap<String, ClusterDB>();
@@ -128,69 +129,101 @@ public class GroundedAutoQuestion {
 					
 			// If the first request is valid, then only proceed
 			if(validReq){
-				// Do spectral clustering and get the clusters to start the experiments
-				// Compute similarity matrices for each modality
+				// WE WANT TO HAVE 10 TRIALS WITH DIFFERENT TEST SETS
+				// Train and test sets are created in this way -> generate a set a 10 seeds first
+				int[] seeds_array = randomGenerator(78, 1000);
+				
 				for (int j=0;j<rc_behavior_modalities.length; j++){
-					// HACK - Compute similarity matrix and the clustering tree for each modality separately
+					System.out.println("*************** Computing for modality: " + rc_behavior_modalities[j] + " *******************");
 					// Have a writer for results
-					File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/" + rc_behavior_modalities[j]);
-					results_filepath.mkdirs();
-					PrintWriter writer = new PrintWriter(results_filepath + "/" + new java.util.Date() + ".txt", "UTF-8");
-					firstTime = true;
-					String[] rc_behavior_modality = new String[1];
-					rc_behavior_modality[0] = rc_behavior_modalities[j];
-					System.out.println("Computing for modality: " + rc_behavior_modality[0]);
-					// After the clusters are computed, create the labelled data for all modalities
-					loadLabelledData(rc_behavior_modalities);
-					
-					computePairwiseSimilarityMatrices(rc_behavior_modality);
-					
-					// Get clusters starting from depth = 2
-					ArrayList<ObjectClusterer> result = getClustersAtDepth(rc_behavior_modalities[j], 2);
-					
-					// ************ TODO: LATER ON: HAVE TO DO MULTIPLE ROUNDS WITH SHUFFLING THE CLUSTERS ***********
-					Collections.shuffle(result);
-					// Get clusterNumber
-					ClusterDB DB = behavior_modality_clusters.get(rc_behavior_modalities[j]);
-					//System.out.println("Result size: "+result.size());
-					// Do the following for each cluster starting at depth = 2
-					for(int i=0; i<result.size(); i++){
-						//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
+					for(int k=0;k<seeds_array.length;k++){
+						String[] rc_behavior_modality = new String[1];
+						rc_behavior_modality[0] = rc_behavior_modalities[j];
+		
+						// After the clusters are computed, create the labelled data for all modalities
+						loadLabelledData(rc_behavior_modalities);
 						
-						// The following is used to select clusters with 5 or less objects only
-						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i), writer);
-					}
-					
-					while(DB.checkForOutliers()){
-						// Have a hashmap to store the outlier objects and which clusters do they belong to
-						HashMap<Integer, ArrayList<String>> outliersWithClusters = new HashMap<Integer, ArrayList<String>>();
+						// Set up the result file path
+						File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/" + rc_behavior_modalities[j]);
+						results_filepath.mkdirs();
 						
-						// As all the clusters are shown, now take care of the outliers
-						int outlier_categories = deduceCategoriesOfOutliers(DB.getOutlierObjects(), rc_behavior_modalities[j]);
-						
-						// Do KNN with outliers and get labels for them as well
-						performKMeansWithOutliers(outlier_categories, DB.getOutlierObjects(), outliersWithClusters);
-						
-						// Reset the outlier objects in DB to null for future purposes
-						DB.clearOutlierObjectsList();
-						
-						System.out.println("Number of outlier clusters: " + outliersWithClusters.size());
-						
-						// Show the clusters of outlier objects and get labels for them
-						for(int clusterNum : outliersWithClusters.keySet()){
-							// Add outlier clusters to cluster Table and get each one a cluster number
-							// NOTE: OUTLIER CLUSTERS DO NOT HAVE OBJECT CLUSTERER OBJECT
-							int currentCluster = DB.addClusterToClusterTable(outliersWithClusters.get(clusterNum));
-							createResponseFileForOutliers(rc_behavior_modality[j], DB, outliersWithClusters.get(clusterNum), currentCluster, writer);
+						//HAVE TO DO MULTIPLE ROUNDS WITH SHUFFLING THE CLUSTERS
+						for(int l=1;l<=10;l++){
+							System.out.println("\n************* NEXT ROUND ****************   TEST " + k + " - TRIAL " + l);
+							firstTime = true;
+							PrintWriter writer = new PrintWriter(results_filepath + "/result_" + k + "_" + l + ".txt", "UTF-8");
+							
+							// HACK - Compute similarity matrix and the clustering tree for each modality separately
+							// Do spectral clustering and get the clusters to start the experiments
+							// Compute similarity matrices for each modality
+							computePairwiseSimilarityMatrices(rc_behavior_modality, seeds_array[k]);
+							
+							// Get clusters starting from depth = 2
+							ArrayList<ObjectClusterer> result = getClustersAtDepth(rc_behavior_modalities[j], 2);
+							
+							Collections.shuffle(result);
+							
+							// Initialize the label table
+							labelTable = new HashMap<Pair, ArrayList<Triple> >();
+							
+							// Get clusterNumber
+							ClusterDB DB = behavior_modality_clusters.get(rc_behavior_modalities[j]);
+							
+							firstTime = true;
+							// Do the following for each cluster starting at depth = 2
+							for(int i=0; i<result.size(); i++){
+								//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
+								
+								// The following is used to select clusters with 5 or less objects only
+								selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i), writer);
+							}
+							
+							while(DB.checkForOutliers()){
+								// Have a hashmap to store the outlier objects and which clusters do they belong to
+								HashMap<Integer, ArrayList<String>> outliersWithClusters = new HashMap<Integer, ArrayList<String>>();
+								
+								// As all the clusters are shown, now take care of the outliers
+								int outlier_categories = deduceCategoriesOfOutliers(DB.getOutlierObjects(), rc_behavior_modalities[j]);
+								
+								// Do KNN with outliers and get labels for them as well
+								performKMeansWithOutliers(outlier_categories, DB.getOutlierObjects(), outliersWithClusters);
+								
+								// Reset the outlier object list in DB to zero for future purposes
+								DB.clearOutlierObjectsList();
+								
+								System.out.println("Number of outlier clusters: " + outliersWithClusters.size());
+								
+								// Show the clusters of outlier objects and get labels for them
+								for(int clusterNum : outliersWithClusters.keySet()){
+									// Add outlier clusters to cluster Table and get each one a cluster number
+									// NOTE: OUTLIER CLUSTERS DO NOT HAVE OBJECT CLUSTERER OBJECT
+									System.out.println("ClusterNum: " + clusterNum);
+									int currentCluster = DB.addClusterToClusterTable(outliersWithClusters.get(clusterNum));
+									System.out.println("Current cluster: " + currentCluster);
+									System.out.println("Current cluster: " + outliersWithClusters.get(clusterNum).toString());
+									System.out.println("Current modality: " + rc_behavior_modalities[j]);
+									createResponseFileForOutliers(rc_behavior_modalities[j], DB, outliersWithClusters.get(clusterNum), currentCluster, writer);
+								}
+							}
+							// Reset everything
+							result.clear();
+							writer.close();
+							questionCount = 0;
+							DB.clearOutlierObjectsList();
 						}
-					}
-					//System.out.println("Changing modalities");
-					result.clear();
-					writer.close();
+					}	
 				}
-				//System.out.println("Done with all modalities");
-
+				System.out.println("Done with all modalities");
 				createEndFile();
+				
+				// Find the max of all results and also get all the points and put it into a .csv file
+				System.out.println("Now computing the ultimate max");
+				findMaxInstances(rc_behavior_modalities);
+				findUltimateMax(rc_behavior_modalities);
+				System.out.println("Producing points to plot");
+				createCSVFile(rc_behavior_modalities);
+				System.out.println("DONE!");
+				System.out.println("Changing modalities");
 			}
 		} catch(Exception e){
 			e.printStackTrace();
@@ -500,23 +533,23 @@ public class GroundedAutoQuestion {
 		//return groundTruthTable;
 	}
 	
-	public static void computePairwiseSimilarityMatrices(String[] rc_behavior_modalities) throws Exception{
+	public static void computePairwiseSimilarityMatrices(String[] rc_behavior_modalities, int seed) throws Exception{
 		DataLoaderCY DL = new DataLoaderCY();
 		ArrayList<String> object_list = DL.getObjectList();
 		
 		// Generate the test and training object sets if its the first time
 		if(firstTime == true){
-			test_objects = DL.getRandomTestObjectSet(object_list, 45);
+			test_objects = DL.getRandomTestObjectSet(object_list, seed);
 			objects = DL.getRandomTrainObjectSet(object_list, test_objects);
 		}
 		
-		/*for(int i=0; i<test_objects.size(); i++){
+		for(int i=0; i<test_objects.size(); i++){
 			System.out.println("Test Objects: "+test_objects.get(i));
 		}
 		
 		for(int i=0; i<objects.size(); i++){
 			System.out.println("Train Objects: "+objects.get(i));
-		}*/
+		}
 		
 		//load pre-computed features
 		FeatureDataLoader FDL = new FeatureDataLoader();
@@ -962,7 +995,7 @@ public class GroundedAutoQuestion {
 	}
 	
 	// For Dynamic Spectral Clustering
-	public static void deleteLabelledDataFromTree(ObjectClusterer OBC, String rc_behavior_modality){
+	/*public static void deleteLabelledDataFromTree(ObjectClusterer OBC, String rc_behavior_modality){
 		// Get the items in the cluster
 		ArrayList<String> clusterids1 = OBC.getIDs();
 		for(int i=0;i<clusterids1.size();i++){
@@ -982,7 +1015,7 @@ public class GroundedAutoQuestion {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/*
 	 * Reads the response file from external program
@@ -1009,7 +1042,7 @@ public class GroundedAutoQuestion {
 						if(lineNum == 0){
 							modality = line;
 
-							int first = modality.compareTo(old_mod);
+							/*int first = modality.compareTo(old_mod);
 
 							if(first != 0){
 								firstTime = true;
@@ -1021,7 +1054,7 @@ public class GroundedAutoQuestion {
 								old_mod = modality;
 							}
 							else
-								firstTime = false;
+								firstTime = false;*/
 						}
 						else if(lineNum == 1)
 							clusterNum = Integer.parseInt(line);
@@ -1391,6 +1424,7 @@ public class GroundedAutoQuestion {
 		
 		try{
 			if(firstTime){
+				System.out.println("In sequence, first time!");
 				firstTime = false;
 				String modality_copy = modality;
 				String resp = ask_free_resp("For the forthcoming clusters, what feature/attribute of the object ", modality);
@@ -1732,6 +1766,286 @@ public class GroundedAutoQuestion {
 		 catch(IOException e){
 			 e.printStackTrace();
 		 } 
+	}
+	
+	// Method to generate the 10 seeds for trials
+	public static int[] randomGenerator(int seed, int max) {
+		int[] seeds_array = new int[10];
+	    Random generator = new Random(seed);
+	    
+	    for(int i=0;i<10;i++){
+	    	int num = generator.nextInt();
+	    	System.out.println("Seed: " + num);
+	    	seeds_array[i] = num;
+	    }
+	    return seeds_array;
+	}
+	
+	// Method to find the maximum of the correct instances for each file
+	// The output is written to a file in each folder
+	public static void findMaxInstances(String [] rc_behavior_modalities) throws Exception{
+		// File path to store the results in 
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/";
+		
+		for(int g=0;g<rc_behavior_modalities.length;g++){
+			File folder = new File(results_path + rc_behavior_modalities[g]);
+			File[] listOfFiles = folder.listFiles();
+			for(int i=0;i<listOfFiles.length;i++){
+				String fileName = listOfFiles[i].getName();
+				if(!(listOfFiles[i].isDirectory())){
+					if(!fileName.equals("MaxNumOfInstances.txt")){
+						String maxResult = readResultFiles(results_path + rc_behavior_modalities[g] + "/" + fileName);
+						File maxResultFilePath = new File(results_path + rc_behavior_modalities[g] + "/MaxResults");
+						maxResultFilePath.mkdirs();
+						writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MaxResults/Max" + fileName, maxResult);
+					}
+				}
+			}
+		}
+	}
+	
+	public static String readResultFiles(String readFilePath){	
+		File readFile = new File(readFilePath);
+		int max_correct = 0;
+		String maxResult = "";
+		
+		try{
+			FileReader fileReader = new FileReader(readFile);
+		    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		    
+		    String line = "";
+		    String prev_line = "";
+		    int count = 0;
+		    boolean store = false;
+		   
+			while((line = bufferedReader.readLine()) != null) {
+			    if (line.contains("NEW ITERATION")){
+			    	count = 1;
+			    	prev_line = line;
+			    	store = false;
+			    }
+			    
+			    if(line.contains("Correctly Classified Instances")){
+			    	String[] tokens = line.split("          ");
+			    	if(Integer.parseInt(tokens[1].trim()) > max_correct){
+			    		maxResult = "";
+			    		max_correct = Integer.parseInt(tokens[1].trim());
+			    		store = true;
+			    	}
+			    }
+			    
+			    if(count <= 18 && store == true){
+				      if(count == 3)
+				     	maxResult = prev_line + "\n";
+				      maxResult = maxResult + line + "\n ";
+		    	}
+			    
+		    	count++;
+			}
+			bufferedReader.close();
+		}
+		
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return maxResult;
+	}
+	
+	// Method to find the maximum of the correct instances for each modality
+	// The output is written to a file in each folder
+	public static void findUltimateMax(String [] rc_behavior_modalities) throws Exception{
+		// File path to store the results in 
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/";
+				
+		for(int g=0;g<rc_behavior_modalities.length;g++){
+			File folder = new File(results_path + rc_behavior_modalities[g] + "/MaxResults");
+			File[] listOfFiles = folder.listFiles();
+			String maxResult = "";
+			String minResult = "";
+			String maxMinResult = "";
+			for(int i=0;i<listOfFiles.length;i++){
+				String fileName = listOfFiles[i].getName();
+				maxResult = readMaxResultFiles(results_path + rc_behavior_modalities[g] + "/MaxResults/" + fileName, maxResult);
+				minResult = readMinResultFiles(results_path + rc_behavior_modalities[g] + "/MaxResults/" + fileName, minResult);
+				writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MaxNumOfInstances.txt", maxResult);
+				writeMaxResultFile(results_path + rc_behavior_modalities[g] + "/MinNumOfInstances.txt", minResult);
+			}
+		}
+	}
+	
+	public static void writeMaxResultFile(String writeFilePath, String maxResult){
+		try{
+			PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
+			writer.println(maxResult);
+			writer.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static String readMaxResultFiles(String readFilePath, String maxResult){
+		File readFile = new File(readFilePath);
+		int max_correct = 0;
+		
+		// First get the current max number of correct instances
+		if(!maxResult.equals("")){
+			String[] lines = maxResult.split("\n");
+			for(int i=0;i<lines.length; i++){
+				if(lines[i].contains("Correctly Classified Instances")){
+					String[] tokens = lines[i].split("          ");
+			    	max_correct = Integer.parseInt(tokens[1].trim());
+				}
+			}
+		}
+
+		try{
+			FileReader fileReader = new FileReader(readFile);
+		    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		    
+		    String line = "";
+		    String prev_line = "";
+		    int count = 0;
+		    boolean store = false;
+		   
+			while((line = bufferedReader.readLine()) != null) {
+				if (line.contains("NEW ITERATION")){
+			    	count = 1;
+			    	prev_line = line;
+			    	store = false;
+			    }
+			
+				 if(line.contains("Correctly Classified Instances")){
+				    	String[] tokens = line.split("          ");
+				    	if(Integer.parseInt(tokens[1].trim()) > max_correct){
+				    		maxResult = "";
+				    		max_correct = Integer.parseInt(tokens[1].trim());
+				    		store = true;
+				    	}
+				    }
+				    
+				    if(count <= 18 && store == true){
+					      if(count == 2)
+					     	maxResult = prev_line + "\n";
+					      maxResult = maxResult + line + "\n ";
+			    	}
+				    
+			    count++;
+			}
+			bufferedReader.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return maxResult;
+	}
+	
+	public static String readMinResultFiles(String readFilePath, String minResult){
+		File readFile = new File(readFilePath);
+		int min_correct = 100000;
+		
+		// First get the current min number of correct instances
+		if(!minResult.equals("")){
+			String[] lines = minResult.split("\n");
+			for(int i=0;i<lines.length; i++){
+				if(lines[i].contains("Correctly Classified Instances")){
+					String[] tokens = lines[i].split("          ");
+					min_correct = Integer.parseInt(tokens[1].trim());
+				}
+			}
+		}
+
+		try{
+			FileReader fileReader = new FileReader(readFile);
+		    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		    
+		    String line = "";
+		    String prev_line = "";
+		    int count = 0;
+		    boolean store = false;
+		   
+			while((line = bufferedReader.readLine()) != null) {
+				if (line.contains("NEW ITERATION")){
+			    	count = 1;
+			    	prev_line = line;
+			    	store = false;
+			    }
+			
+				 if(line.contains("Correctly Classified Instances")){
+				    	String[] tokens = line.split("          ");
+				    	if(Integer.parseInt(tokens[1].trim()) < min_correct){
+				    		minResult = "";
+				    		min_correct = Integer.parseInt(tokens[1].trim());
+				    		store = true;
+				    	}
+				    }
+				    
+				    if(count <= 18 && store == true){
+					      if(count == 2)
+					     	minResult = prev_line + "\n";
+					      minResult = minResult + line + "\n ";
+			    	}
+				    
+			    count++;
+			}
+			bufferedReader.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		return minResult;
+	}
+	
+	// Method to create a .csv file per context with all the data points to plot a graph
+	public static void createCSVFile(String [] rc_behavior_modalities) throws Exception{
+		// File path to store the results in 
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp2/";
+						
+		for(int g=0;g<rc_behavior_modalities.length;g++){
+			String writeFilePath = results_path + rc_behavior_modalities[g] + "/PointsToPlot.csv";
+			File folder = new File(results_path + rc_behavior_modalities[g]);
+			File[] listOfFiles = folder.listFiles();
+			
+			try{
+				PrintWriter writer = new PrintWriter(writeFilePath, "UTF-8");
+				for(int i=0;i<listOfFiles.length;i++){
+					String fileName = listOfFiles[i].getName();
+				
+					if(!(listOfFiles[i].isDirectory())){
+						if(!(fileName.equals("MaxNumOfInstances.txt")) && !(fileName.equals("MinNumOfInstances.txt")) && !(fileName.equals("PointsToPlot.csv"))){
+							FileReader fileReader = new FileReader(results_path + rc_behavior_modalities[g] + "/" + fileName);
+						    BufferedReader bufferedReader = new BufferedReader(fileReader);
+		
+						    String line = "";
+						    int numOfInstTrainedOn = 0;
+						    float correctAccuracy = 0;
+						   
+							while((line = bufferedReader.readLine()) != null) {
+								if (line.contains("Question Count")){
+									String[] tokens = line.split(":");
+									numOfInstTrainedOn = Integer.parseInt(tokens[1].trim());
+									writer.print(numOfInstTrainedOn + ",");
+							    }
+							
+								 if(line.contains("Correctly Classified Instances")){
+								    String[] tokens = line.split("              ");
+								    correctAccuracy = Float.parseFloat(tokens[1].split("%")[0].trim());  
+								    System.out.println("Correct accuracy: " + correctAccuracy);
+								    writer.print(correctAccuracy + "\n");
+								 }
+							}
+						}
+					}
+				}
+				writer.close();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 }
 
