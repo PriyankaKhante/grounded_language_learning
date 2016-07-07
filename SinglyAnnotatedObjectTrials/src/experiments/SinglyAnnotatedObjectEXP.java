@@ -35,8 +35,9 @@ public class SinglyAnnotatedObjectEXP {
 	static HashMap<String, HashMap<String, String>> groundTruthTable = new HashMap<String, HashMap<String, String>>();
 	public static void main(String[] args) {
 		//behaviour-modailities to use
-		String [] rc_behavior_modalities = {"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
-					"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
+		String [] rc_behavior_modalities = {"drop_audio"};
+//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
+					//"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
 				
 		// Modalities that have been taken out
 		// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -118,7 +119,7 @@ public class SinglyAnnotatedObjectEXP {
 		int[] seeds_array = randomGenerator(78, 1000);
 			
 		// File path to store the results in 
-		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedResults/";
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedObjectTrials/SinglyAnnotatedResults/";
 		
 		FeatureDataLoader FDL = new FeatureDataLoader();
 		
@@ -332,7 +333,7 @@ public class SinglyAnnotatedObjectEXP {
 	// The output is written to a file in each folder
 	public static void findMaxInstances(String [] rc_behavior_modalities) throws Exception{
 		// File path to store the results in 
-		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedResults/";
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedObjectTrials/SinglyAnnotatedResults/";
 		
 		for(int g=0;g<rc_behavior_modalities.length;g++){
 			File folder = new File(results_path + rc_behavior_modalities[g]);
@@ -412,7 +413,7 @@ public class SinglyAnnotatedObjectEXP {
 	// The output is written to a file in each folder
 	public static void findUltimateMax(String [] rc_behavior_modalities) throws Exception{
 		// File path to store the results in 
-		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedResults/";
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedObjectTrials/SinglyAnnotatedResults/";
 				
 		for(int g=0;g<rc_behavior_modalities.length;g++){
 			File folder = new File(results_path + rc_behavior_modalities[g] + "/MaxResults");
@@ -547,7 +548,7 @@ public class SinglyAnnotatedObjectEXP {
 	// Method to create a .csv file per context with all the data points to plot a graph
 	public static void createCSVFile(String [] rc_behavior_modalities) throws Exception{
 		// File path to store the results in 
-		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedResults/";
+		String results_path = "/home/priyanka/Documents/grounded_language_learning/SinglyAnnotatedObjectTrials/SinglyAnnotatedResults/";
 						
 		for(int g=0;g<rc_behavior_modalities.length;g++){
 			String writeFilePath = results_path + rc_behavior_modalities[g] + "/PointsToPlot.csv";
