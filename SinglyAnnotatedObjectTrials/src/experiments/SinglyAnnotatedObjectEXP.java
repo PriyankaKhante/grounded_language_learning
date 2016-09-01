@@ -35,9 +35,8 @@ public class SinglyAnnotatedObjectEXP {
 	static HashMap<String, HashMap<String, String>> groundTruthTable = new HashMap<String, HashMap<String, String>>();
 	public static void main(String[] args) {
 		//behaviour-modailities to use
-		String [] rc_behavior_modalities = {"drop_audio"};
-				//{"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
-					//"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
+		String [] rc_behavior_modalities = {"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
+					"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
 				
 		// Modalities that have been taken out
 		// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -277,6 +276,8 @@ public class SinglyAnnotatedObjectEXP {
 	 					// Write out the results to the file
 	 					writer.println(EV.toSummaryString());
 	 					writer.println(EV.toClassDetailsString());
+	 					writer.println("Kappa Statistics: " + EV.kappa());
+	 					writer.println();
 	 					//System.out.println(EV.toMatrixString());
 	 						
 	 				   /*Evaluation eval = new Evaluation(train);
@@ -570,6 +571,7 @@ public class SinglyAnnotatedObjectEXP {
 						    String line = "";
 						    int numOfInstTrainedOn = 0;
 						    float correctAccuracy = 0;
+						    double kappa = 0;
 						   
 							while((line = bufferedReader.readLine()) != null) {
 								if (line.contains("NEW ITERATION")){
@@ -578,11 +580,17 @@ public class SinglyAnnotatedObjectEXP {
 									writer.print(numOfInstTrainedOn/6 + ",");
 							    }
 							
-								 if(line.contains("Correctly Classified Instances")){
+								if(line.contains("Correctly Classified Instances")){
 								    String[] tokens = line.split("              ");
 								    correctAccuracy = Float.parseFloat(tokens[1].split("%")[0].trim());  
-								    writer.print(correctAccuracy + "\n");
-								 }
+								    writer.print(correctAccuracy + ",");
+								}
+								 
+								if (line.contains("Kappa Statistics")){
+									String[] tokens = line.split(":");
+									kappa = Double.parseDouble(tokens[1].trim());
+									writer.print(kappa + "\n");
+								}
 							}
 						}
 					}
