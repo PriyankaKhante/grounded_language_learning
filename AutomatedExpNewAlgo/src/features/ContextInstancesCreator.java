@@ -32,7 +32,6 @@ public class ContextInstancesCreator {
 		Instances data = new Instances(dataHeader);
 		//System.out.println("Trials size: " + trials.size());
 		for (int i = 0; i <trials.size(); i++){
-			//System.out.println("Info : " + trials.get(i).getObject()+  "   " + trials.get(i).getTrial());
 			Instance inst = this.generateInstance(trials.get(i).getObject(), trials.get(i).getTrial());
 			if (inst != null)
 				data.add(inst);
@@ -40,6 +39,9 @@ public class ContextInstancesCreator {
 	
 		return data;
 	}
+	
+	// Generates test and train set in the same go so as to keep the class values to be the same
+	//public ArrayList<Instances> generateFullSetForTestAndTrain()
 	
 	public Instances getDataForObject(String object, int num_exec){
 		Instances data = new Instances(dataHeader);
@@ -163,23 +165,24 @@ public class ContextInstancesCreator {
 	
 	public Instance generateInstance(String object_id, int trial){
 		double [] f = CD.get_features(object_id, trial);
+		//System.out.println("Object_id: " + object_id + "    :" + java.util.Arrays.toString(f));
 		if (f != null){
 			// Should set the attribute (property) of the object as the class value
 			String class_val = LF.classValue(object_id);
-			//System.out.println("Class val: " + class_val);
 			Instance inst = new Instance(dataHeader.numAttributes());
 			inst.setDataset(dataHeader);
 			for (int i = 0; i < f.length; i++)
 				inst.setValue(i, f[i]);
 			
 			inst.setValue(dataHeader.classAttribute(), class_val);
+			//System.out.println("Class val: " + class_val + " with value: " + inst.classValue());
 			
 			return inst;
 		}
 		else return null;//in case data is missing for this point
 	}
 	
-	public int generateHeader(){
+	public int generateHeader(ArrayList<String> training_objs, ArrayList<String> objects){
 		FastVector attrInfo = new FastVector();
 		
 		String context_name = CD.getName();
@@ -192,9 +195,9 @@ public class ContextInstancesCreator {
 		
 		// Create the nominal attribute to add to the header
 		FastVector objValues = new FastVector();
-		ArrayList<String> o_vals = LF.getObjectSet();
-		for (int i = 0; i < o_vals.size(); i ++){
-			objValues.addElement(o_vals.get(i));
+		//ArrayList<String> o_vals = LF.getObjectSet();
+		for (int i = 0; i < training_objs.size(); i ++){
+			objValues.addElement(training_objs.get(i));
 		}
 		
 		Attribute objAttr = new Attribute("objects",objValues);
@@ -202,7 +205,7 @@ public class ContextInstancesCreator {
 		
 		// Create a class attribute to add to the header
 		FastVector classValues = new FastVector();
-		ArrayList<String> c_vals = LF.getValueSet();
+		ArrayList<String> c_vals = LF.getValueSet(objects);
 		for (int i = 0; i < c_vals.size(); i ++){
 			if(!classValues.contains(c_vals.get(i)))
 				classValues.addElement(c_vals.get(i));
@@ -218,4 +221,42 @@ public class ContextInstancesCreator {
 		
 		return 1;
 	}	
+	
+	public void generateHeaderForTest(ArrayList<String> testObjects, ArrayList<String> objects){
+		FastVector attrInfo = new FastVector();
+		
+		String context_name = CD.getName();
+		//System.out.println("CD: " + CD.getDim());
+		for (int j = 0; j < CD.getDim()-1; j++){
+			//System.out.println("Attr: " + context_name +"_a"+ j);
+			Attribute a = new Attribute(new String(context_name +"_a"+ j));
+			attrInfo.addElement(a);
+		}
+		
+		// Create the nominal attribute to add to the header
+		FastVector objValues = new FastVector();
+		for (int i = 0; i < testObjects.size(); i ++){
+			objValues.addElement(testObjects.get(i));
+		}
+		
+		Attribute objAttr = new Attribute("objects",objValues);
+		attrInfo.addElement(objAttr);
+		
+		// Create a class attribute to add to the header
+		FastVector classValues = new FastVector();
+		// Add the class values from training objects so as to maintain the order and then add the rest from test objects
+		ArrayList<String> c_vals = LF.getValueSet(objects);
+		for (int i = 0; i < c_vals.size(); i ++){
+			if(!classValues.contains(c_vals.get(i)))
+				classValues.addElement(c_vals.get(i));
+		}
+		
+		Attribute classAttr = new Attribute("class",classValues);
+		attrInfo.addElement(classAttr);
+		
+		dataHeader = new Instances("data", attrInfo, 0);
+		//System.out.println("Nominal Attr: " + dataHeader.attribute(dataHeader.numAttributes()-2));
+		//System.out.println("Class: " + dataHeader.attribute(dataHeader.numAttributes()-1));
+		dataHeader.setClassIndex(dataHeader.numAttributes()-1);
+	}
 }

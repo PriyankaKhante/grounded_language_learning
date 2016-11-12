@@ -124,7 +124,7 @@ public class SinglyAnnotatedObjectEXP {
 		
 		// Create the files which have the object data along with the labels
 		for(int g=0;g<rc_behavior_modalities.length;g++)
-			FDL.createContextDataWithLabels(groundTruthTable, getAttributeForModality(rc_behavior_modalities[g]) , rc_behavior_modalities[g], objects_list);
+			FDL.createContextDataWithLabels(groundTruthTable, getAttributeForModality(rc_behavior_modalities[g]), rc_behavior_modalities[g], objects_list);
 		
 		for(int g=0;g<rc_behavior_modalities.length;g++){
 			System.out.println("Behaviour Modality:  " + rc_behavior_modalities[g]);

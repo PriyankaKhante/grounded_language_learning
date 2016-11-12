@@ -2548,9 +2548,6 @@ public class EvaluationJS implements Summarizable {
 					Instance instance)
        throws Exception {
 
-	  
-	  
-	  
     int actualClass = (int)instance.classValue();
     double costFactor = 1;
 

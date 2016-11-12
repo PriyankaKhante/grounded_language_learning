@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import cern.colt.Arrays;
 import weka.core.Utils;
 
 public class ContextFeatureData {
@@ -50,6 +51,7 @@ public class ContextFeatureData {
 	public double [] get_features(String object, int trial_exec){
 		String tag_i = new String(object+"_"+trial_exec);
 		int index = tags.indexOf(tag_i);
+		//System.out.println("Tag_i: " + tag_i + Arrays.toString(feature_vectors.get(index)));
 		if (index >= 0)
 			return feature_vectors.get(index);
 	
