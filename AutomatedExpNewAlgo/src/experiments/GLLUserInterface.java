@@ -105,8 +105,6 @@ public class GLLUserInterface extends JFrame {
 		    			buttonPanel.removeAll();
 		            	ui.remove(mainPanel);
 		            	
-		            	System.out.println("I am now doing something! ");
-		            	
 		    			// Create a JLabel and add it to the mainPanel
 						JLabel attrLabel = new JLabel(resp);
 						attrLabel.setFont(new Font("Times New Roman", Font.BOLD, 40));
@@ -172,6 +170,8 @@ public class GLLUserInterface extends JFrame {
 						        		gbc.anchor = GridBagConstraints.WEST;
 						        		
 						        		final ArrayList<String> outlierObjs = new ArrayList<String>();
+						        		
+						        		System.out.println("Current cluster: " + cur_cluster);
 						        		
 						        		for (final String objectName : cur_cluster) {
 						        			
@@ -297,7 +297,7 @@ public class GLLUserInterface extends JFrame {
 						        		label3.setFont(new Font("Times New Roman", Font.BOLD, 40));
 						        		outlierPanel.add(label3, BorderLayout.CENTER);
 						        		
-						        		String[] categories = {"Select a number", "1", "2", "3", "4", "5", "6" };
+						        		String[] categories = {"Select a number", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
 						        		
 						        		final JComboBox categoryList = new JComboBox(categories);
 						        		categoryList.setFont(new Font("Times New Roman", Font.BOLD, 40));
@@ -331,8 +331,6 @@ public class GLLUserInterface extends JFrame {
 					            	}
 				        		}
 				        		
-				        		System.out.println("I am now doing something2! ");
-				            	
 					        	buttonPanel.add(nextButton);
 				        	    mainPanel.add(label, BorderLayout.NORTH);
 				        	    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
@@ -341,9 +339,6 @@ public class GLLUserInterface extends JFrame {
 				            	ui.pack();
 				            	ui.validate();
 				                ui.repaint(); 
-				                
-				                System.out.println("I am now doing something!3");
-				            	
 				            }
 				        });
 					   
@@ -352,17 +347,12 @@ public class GLLUserInterface extends JFrame {
 					    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 					    
 					    System.out.println("EndOfModality at the end" + endOfModality);
-					    
-					    System.out.println("I am now doing something! 4");
 	    			}catch(Exception ex){
 	    				ex.printStackTrace();
 	    			}
 	            	ui.setContentPane(mainPanel);
 	            	ui.validate();
-	                ui.repaint(); 
-	                
-	                System.out.println("I am now doing something! 5");
-	            	
+	                ui.repaint();      	
 	            }
 	        });
 		    
@@ -372,10 +362,6 @@ public class GLLUserInterface extends JFrame {
             ui.setContentPane(mainPanel);
             ui.pack();
             ui.setVisible(true);
-            
-            System.out.println("I am now doing something!6");
-        	
-			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -387,7 +373,7 @@ public class GLLUserInterface extends JFrame {
 	 * here.
 	 */
 	public static String ask_free_resp(String question, String modality){
-		//System.out.println("%%%%%% IN ASK_FREE_RESP %%%%%%%");
+		System.out.println("%%%%%% IN ASK_FREE_RESP %%%%%%%: " + modality);
 		//Increment the questions asked by 1 every time this method is called
 		// THE FOLLOWING IS COMMENTED OUT -> in comparison to the first experiment, where this question was not counted
 		//questionCount++;

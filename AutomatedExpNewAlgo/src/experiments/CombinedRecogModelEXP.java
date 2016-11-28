@@ -63,8 +63,8 @@ public class CombinedRecogModelEXP {
 				"revolve_haptics", "push_haptics", "shake_haptics", "grasp_haptics"};  
 	
 	//attributes to be learned
-	static String[] attributes = {"height",  "has_contents", "weight"};
-	// "color","size", "material", "deformable", "shape",
+	static String[] attributes = {"weight"};
+	//, "color", "size", "shape", "material", "deformable", "has_contents", "height"
 	
 	//Collections.shuffle(Arrays.asList(rc_behavior_modalities));
 
@@ -135,7 +135,7 @@ public class CombinedRecogModelEXP {
 			if(validReq){
 				// WE WANT TO HAVE 10 TRIALS WITH DIFFERENT TEST SETS
 				// Train and test sets are created in this way -> generate a set a 10 seeds first
-				int[] seeds_array = randomGenerator(78, 1000);
+				int[] seeds_array = randomGenerator(78);
 				
 				for(int m=0;m<attributes.length; m++){
 					global_attr = attributes[m];
@@ -171,6 +171,9 @@ public class CombinedRecogModelEXP {
 							//setup array to store temp classifier for multiple behavior testing
 							Classifier[] C_array = new Classifier[rc_behavior_modalities.length];
 							
+							//setup array to store weights for each round
+							double[] context_weights = new double[rc_behavior_modalities.length];
+							
 							// HACK - Compute similarity matrix and the clustering tree for each modality separately
 							// Do spectral clustering and get the clusters to start the experiments
 							// Compute similarity matrices for each modality
@@ -192,7 +195,7 @@ public class CombinedRecogModelEXP {
 							for(int i=0; i<result.size(); i++){
 								//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
 								HashMap<Integer, ObjectClusterer> selectedClusters = new HashMap<Integer, ObjectClusterer>();
-								selectClustersToDisplay(selectedClusters, rc_modality, DB, result.get(i), writer, EV, C_array);
+								selectClustersToDisplay(selectedClusters, rc_modality, DB, result.get(i), writer, EV, C_array, context_weights);
 								
 								// The following is used to select clusters with 5 or less objects only
 								for(int j=0; j<=selectedClusters.size(); j++){
@@ -200,7 +203,7 @@ public class CombinedRecogModelEXP {
 									List<Integer> keys = new ArrayList<Integer>(selectedClusters.keySet());
 									int randomKey = keys.get(random.nextInt(keys.size()));
 									ObjectClusterer value = selectedClusters.get(randomKey);
-									createResponseFile(rc_modality, DB, value, randomKey, writer, EV, C_array);
+									createResponseFile(rc_modality, DB, value, randomKey, writer, EV, C_array, context_weights);
 									
 									// Delete them from selectedClusters
 									selectedClusters.remove(randomKey);
@@ -234,7 +237,7 @@ public class CombinedRecogModelEXP {
 									//System.out.println("Current cluster: " + currentCluster);
 									//System.out.println("Current cluster: " + outliersWithClusters.get(clusterNum).toString());
 									//System.out.println("Current modality: " + rc_behavior_modalities[j]);
-									createResponseFileForOutliers(rc_modality, DB, outliersWithClusters.get(clusterNum), currentCluster, writer, EV, C_array);
+									createResponseFileForOutliers(rc_modality, DB, outliersWithClusters.get(clusterNum), currentCluster, writer, EV, C_array, context_weights);
 								}
 							}
 							// Reset everything
@@ -264,21 +267,21 @@ public class CombinedRecogModelEXP {
 	public static String chooseContextToClusterFrom(String attribute){
 		String rc_modality = "";
 		if(attribute == "size")
-			rc_modality = "grasp_haptics";
+			rc_modality = "grasp_size";
 		if(attribute == "material")
-			rc_modality = "push_audio";
+			rc_modality = "drop_audio";
 		if(attribute == "has_contents")
-			rc_modality = "shake_audio";	
+			rc_modality = "revolve_haptics";	
 		if(attribute == "weight")
-			rc_modality = "push_haptics";
+			rc_modality = "drop_haptics";
 		if(attribute == "height")
-			rc_modality = "press_haptics";
+			rc_modality = "squeeze_haptics";
 		if(attribute == "deformable")
-			rc_modality = "revolve_haptics";
+			rc_modality = "lift_haptics";
 		if(attribute == "color")
 			rc_modality = "look_color";
 		if(attribute == "shape")
-			rc_modality = "look_shape";
+			rc_modality = "push_audio";
 		
 		return rc_modality;
 	}
@@ -510,7 +513,7 @@ public class CombinedRecogModelEXP {
 		return result;
 	}
 	
-	public static void selectClustersToDisplay(HashMap<Integer, ObjectClusterer> selectedClusters, String rc_behavior_modality, ClusterDB DB, ObjectClusterer result, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array){
+	public static void selectClustersToDisplay(HashMap<Integer, ObjectClusterer> selectedClusters, String rc_behavior_modality, ClusterDB DB, ObjectClusterer result, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		if(result.getIDs().size() <= 6){
 			HashMap<Integer, ObjectClusterer> clusterNumAndOCTable = DB.getClusterNumAndOCTable();
 			for (Map.Entry<Integer, ObjectClusterer> e : clusterNumAndOCTable.entrySet()) {
@@ -527,7 +530,7 @@ public class CombinedRecogModelEXP {
 			if(result.getChildren().size() != 0){
 				for(int m=0; m<result.getChildren().size(); m++){
 					ObjectClusterer OCC = result.getChildren().get(m);
-					selectClustersToDisplay(selectedClusters, rc_behavior_modality, DB, OCC, writer, EV, C_array);
+					selectClustersToDisplay(selectedClusters, rc_behavior_modality, DB, OCC, writer, EV, C_array, context_weights);
 				}
 			}
 		}
@@ -729,7 +732,7 @@ public class CombinedRecogModelEXP {
 		}
 	}
 	
-	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter resultWriter, EvaluationJS[] EV, Classifier[] C_array){
+	public static void createResponseFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter resultWriter, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		//System.out.println("Creating a response file");
 		try{
 			// Request text file code
@@ -749,13 +752,13 @@ public class CombinedRecogModelEXP {
 		}
 		
 		// Call sequence() as the response.txt file needs to be processed
-		sequence(DB, OBC, resultWriter, EV, C_array);
+		sequence(DB, OBC, resultWriter, EV, C_array, context_weights);
 
 		// Wait for the request.txt file to exist
-		checkIfRequestFileExists(rc_behavior_modality, DB, OBC, clusterNum, resultWriter, EV, C_array);
+		checkIfRequestFileExists(rc_behavior_modality, DB, OBC, clusterNum, resultWriter, EV, C_array, context_weights);
 	}
 	
-	public static void createResponseFileForOutliers(String rc_behavior_modality, ClusterDB DB, ArrayList<String> outlier_objs, int currentCluster, PrintWriter resultWriter, EvaluationJS[] EV, Classifier[] C_array){
+	public static void createResponseFileForOutliers(String rc_behavior_modality, ClusterDB DB, ArrayList<String> outlier_objs, int currentCluster, PrintWriter resultWriter, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		//System.out.println("Creating a response file for outliers");
 		try{
 			// Request text file code
@@ -775,7 +778,7 @@ public class CombinedRecogModelEXP {
 		}
 		
 		// Call sequenceForOutliers() as the response.txt file needs to be processed
-		sequenceForOutliers(DB, resultWriter, EV, C_array);
+		sequenceForOutliers(DB, resultWriter, EV, C_array, context_weights);
 		
 		// Wait for the request.txt file to exist
 		checkIfRequestFileExistsForOutliers(rc_behavior_modality, DB, currentCluster);
@@ -862,7 +865,7 @@ public class CombinedRecogModelEXP {
 		}
 	}
 	
-	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array){
+	public static void checkIfRequestFileExists(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		try{
 			//System.out.println("Checking if request file exists");
 			// Check if request.txt file exists and sleep till it does
@@ -878,7 +881,7 @@ public class CombinedRecogModelEXP {
 			e.printStackTrace();
 		}
 		// Read the contents of the request.txt file
-		readRequestFile(rc_behavior_modality, DB, OBC, clusterNum, writer, EV, C_array);
+		readRequestFile(rc_behavior_modality, DB, OBC, clusterNum, writer, EV, C_array, context_weights);
 	}
 	
 
@@ -960,7 +963,7 @@ public class CombinedRecogModelEXP {
 		return true;
 	}
 	
-	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array){
+	public static void readRequestFile(String rc_behavior_modality, ClusterDB DB, ObjectClusterer OBC, int clusterNum, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		try{
 			//System.out.println("Reading the request file");
 			File request = new File("/home/priyanka/Desktop/groundedRequest.txt");
@@ -1029,7 +1032,7 @@ public class CombinedRecogModelEXP {
          					
          					if(tempClusterIds.equals(OCC.getIDs())){
          						// Send the modified clusters to be displayed
-         						createResponseFile(rc_behavior_modality, DB, OCC, (Integer)e.getKey(), writer, EV, C_array);
+         						createResponseFile(rc_behavior_modality, DB, OCC, (Integer)e.getKey(), writer, EV, C_array, context_weights);
          						break;
          					}
          				}
@@ -1309,7 +1312,7 @@ public class CombinedRecogModelEXP {
 	}
 	
 	// The following method is only called for outlier clusters
-	public static void sequenceForOutliers(ClusterDB DB, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array){
+	public static void sequenceForOutliers(ClusterDB DB, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		readResponseFile();
 		boolean req_sent = false;
 		boolean completedRun = false;
@@ -1366,7 +1369,7 @@ public class CombinedRecogModelEXP {
 							if(b == rc_behavior_modalities.length - 1)
 								completedRun = true;
 							
-							buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, b, completedRun);
+							buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, context_weights, b, completedRun);
 						}
 					}
 			}
@@ -1443,7 +1446,7 @@ public class CombinedRecogModelEXP {
 						if(b == rc_behavior_modalities.length - 1)
 							completedRun = true;
 						
-						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, b, completedRun);
+						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, context_weights, b, completedRun);
 					}
 				}
 				
@@ -1488,7 +1491,7 @@ public class CombinedRecogModelEXP {
 			
 	}
 
-	public static void sequence(ClusterDB DB, ObjectClusterer OBC, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array){
+	public static void sequence(ClusterDB DB, ObjectClusterer OBC, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights){
 		readResponseFile();
 		String att_from_above = "";
 		boolean req_sent = false;
@@ -1563,7 +1566,7 @@ public class CombinedRecogModelEXP {
 						if(b == rc_behavior_modalities.length - 1)
 							completedRun = true;
 						
-						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, b, completedRun);
+						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, context_weights, b, completedRun);
 					}
 				}	
 			}
@@ -1640,7 +1643,7 @@ public class CombinedRecogModelEXP {
 						if(b == rc_behavior_modalities.length - 1)
 							completedRun = true;
 						
-						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, b, completedRun);
+						buildClassifierAndTest(rc_behavior_modalities[b], writer, EV, C_array, context_weights, b, completedRun);
 					}
 				}
 					
@@ -1677,7 +1680,7 @@ public class CombinedRecogModelEXP {
 	// This method adds labels to the instances -> create files with data with labels
 	// And then build classifiers
 	// Create decision trees and test on test object and output accuracy to a file. Don't create a new file unless its a different modality.
-	public static void buildClassifierAndTest(String rc_modality, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, int b, boolean completedRun){
+	public static void buildClassifierAndTest(String rc_modality, PrintWriter writer, EvaluationJS[] EV, Classifier[] C_array, double[] context_weights, int b, boolean completedRun){
 		//System.out.println("In build classifier and test";
 		
 		// Declare the classifier
@@ -1749,8 +1752,26 @@ public class CombinedRecogModelEXP {
 			//full set of trials for training			
 			//System.out.println("Training objects size: " + training_objs.size());
 			ArrayList<InteractionTrial> train_trials = DL.generateTrials(training_objs, 6);
-			
 			Instances train = IC.generateFullSet(train_trials);
+			Instances train2;
+			
+			if(training_objs.size() == 27){
+				// create an ordered training list
+				ArrayList<String> orderedTrainingObjs = new ArrayList<String>();
+				for(int r=0;r<objects_list.size();r++){
+					if(training_objs.contains(objects_list.get(r))){
+						orderedTrainingObjs.add(objects_list.get(r));
+					}
+				}
+				
+				ArrayList<InteractionTrial> train_trials2 = DL.generateTrials(orderedTrainingObjs, 6);
+				train2 = IC.generateFullSet(train_trials2);
+			}
+			
+			else{
+				ArrayList<InteractionTrial> train_trials2 = DL.generateTrials(training_objs, 6);
+				train2 = IC.generateFullSet(train_trials2);
+			}
 			
 			//System.out.println("Training: " + train.toString());
 
@@ -1759,8 +1780,15 @@ public class CombinedRecogModelEXP {
 			remove.setAttributeIndices(Integer.toString(train.numAttributes()-1));
 			remove.setInvertSelection(false);
 			remove.setInputFormat(train);
+			
+			// Set up a remove filter to remove the nominal attributes before classifying
+			Remove remove3 = new Remove();
+			remove3.setAttributeIndices(Integer.toString(train2.numAttributes()-1));
+			remove3.setInvertSelection(false);
+			remove3.setInputFormat(train2);
 						
 			Instances training = weka.filters.Filter.useFilter(train, remove);
+			Instances training_temp = weka.filters.Filter.useFilter(train2, remove3);
 		
 			// Build Classifier only out of these chosen instances 
 			// try different ones - decision trees, KNN and SVM
@@ -1771,7 +1799,20 @@ public class CombinedRecogModelEXP {
 			Classifier C_mb = Classifier.makeCopy(C_boost);
 			C_mb.buildClassifier(training);
 			C_array[b] = C_mb;
-		
+			
+			Classifier C_cross = Classifier.makeCopy(C_boost);
+			
+			//calculate and store the context weights by doing cross validation
+			EvaluationJS EV_cross = new EvaluationJS(training_temp);
+			int folds;
+			if(training_objs.size() < 5)
+				folds = training_objs.size();
+			else
+				folds = 5;
+			EV_cross.crossValidateModel(C_cross, training_temp, folds, new Random(34));
+			context_weights[b] = EV_cross.kappa();
+			//System.out.println("For training: " + training_objs.size() + " context weight: " + context_weights[b] + " modality: " + rc_modality);
+
 			IC.generateHeaderForTest(test_objects, objects_list);
 			
 			//System.out.println("Test objects: " + test_objects);
@@ -1820,7 +1861,9 @@ public class CombinedRecogModelEXP {
 	 					Instances testing2 = weka.filters.Filter.useFilter(tests, remove2);
 						
 						//System.out.println("Test instance at " + o + ": " + tests.instance(o));
-						double contextReliability = loadContextReliability(rc_behavior_modalities[g], global_attr);
+	 					// UNCOMMENT THE FOLLOWING FOR V1
+	 					double contextReliability = context_weights[g];
+						//double contextReliability = loadContextReliability(rc_behavior_modalities[g], global_attr);
 						//System.out.println("Context reliability of " + rc_behavior_modalities[g] + " is: " + contextReliability);
 						
 						// Convert all negative kappas to zero so as to normalize between 0-1     ====> Still up for discussion. Is negative Kappa worse than 0 Kappa?
@@ -1832,7 +1875,7 @@ public class CombinedRecogModelEXP {
 						double[] distr_bm = C_array[g].distributionForInstance(testing2.instance(o));
 						//System.out.println("Distribution for test instance: " + Arrays.toString(distr_bm));
 						for (int d = 0; d <final_distr.length; d++)
-						final_distr[d]+=contextReliability*distr_bm[d];         // Adding up probabilities for each class label
+							final_distr[d]+=contextReliability*distr_bm[d];         // Adding up probabilities for each class label
 					}
 					
 					Utils.normalize(final_distr);
@@ -1966,7 +2009,7 @@ public class CombinedRecogModelEXP {
 	}*/
 	
 	// Method to generate the 10 seeds for trials
-	public static int[] randomGenerator(int seed, int max) {
+	public static int[] randomGenerator(int seed) {
 		int[] seeds_array = new int[10];
 	    Random generator = new Random(seed);
 	    

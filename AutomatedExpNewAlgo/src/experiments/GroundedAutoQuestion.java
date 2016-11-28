@@ -54,8 +54,8 @@ public class GroundedAutoQuestion {
 	public static final String requestName	= "groundedRequest.txt";
 	
 	//behaviour-modailities to use
-	static String [] rc_behavior_modalities = {"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
-				"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
+	static String [] rc_behavior_modalities = {"drop_audio", "revolve_audio", "push_audio", "hold_haptics", "lift_haptics",
+				"press_haptics", "squeeze_haptics", "grasp_size", "shake_audio", "look_color", "look_shape"};  
 					
 	// Modalities that have been taken out
 	// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -263,7 +263,7 @@ public class GroundedAutoQuestion {
 		
 		//labeling function labels trials by labels
 		IClassLabelFunction LF = new ClassLabelID(objects_list, object_labels);
-		ArrayList<String> class_values = LF.getValueSet();
+		ArrayList<String> class_values = LF.getUniqueValueSet(objects_list);
 		//System.out.println("Class values in build classifier: " + class_values.toString());
 		String [] classVals = new String[class_values.size()];
 		for (int f = 0; f < class_values.size(); f++)
@@ -273,7 +273,7 @@ public class GroundedAutoQuestion {
 		ContextInstancesCreator IC = new ContextInstancesCreator();
 		IC.setLabelFunction(LF);
 		IC.setData(FDL.getData(modality));
-		IC.generateHeader();
+		IC.generateHeader(outlier_objects, objects_list);
 				
 		//full set of trials for training	
 		// THE FOLLOWING CODE IS TO CLASSIFY EACH INSTANCE SEPARATELY
@@ -574,7 +574,7 @@ public class GroundedAutoQuestion {
 			
 			//labeling function labels trials by labels
 			IClassLabelFunction LF = new ClassLabelID(objects, object_labels);
-			ArrayList<String> class_values = LF.getValueSet();
+			ArrayList<String> class_values = LF.getUniqueValueSet(objects);
 			String [] classVals = new String[class_values.size()];
 			for (int f = 0; f < class_values.size(); f++)
 				classVals[f]=class_values.get(f);
@@ -583,7 +583,7 @@ public class GroundedAutoQuestion {
 			ContextInstancesCreator IC = new ContextInstancesCreator();
 			IC.setLabelFunction(LF);
 			IC.setData(FDL.getData(rc_behavior_modalities[b]));
-			IC.generateHeader();
+			IC.generateHeader(objects, objects);
 			
 			//full set of trials for training
 			ArrayList<InteractionTrial> train_trials = DL.generateTrials(objects, 6);
@@ -1651,7 +1651,8 @@ public class GroundedAutoQuestion {
 			
 			//labeling function labels trials by labels
 			IClassLabelFunction LF = new ClassLabelID(objects_list, object_labels);
-			ArrayList<String> class_values = LF.getValueSet();
+			ArrayList<String> allClassValues = LF.getValueSet(objects_list);      // This one has each of the class values including duplicates
+			ArrayList<String> class_values = LF.getUniqueValueSet(objects_list);   // This one does not have any duplicates
 			//System.out.println("Class values in build classifier: " + class_values.toString());
 			String [] classVals = new String[class_values.size()];
 			for (int f = 0; f < class_values.size(); f++)
@@ -1661,7 +1662,7 @@ public class GroundedAutoQuestion {
 			ContextInstancesCreator IC = new ContextInstancesCreator();
 			IC.setLabelFunction(LF);
 			IC.setData(FDL.getData(modality));
-			IC.generateHeader();
+			IC.generateHeader(training_objs, objects_list);
 					
 			//full set of trials for training			
 			//System.out.println("Training objects size: " + training_objs.size());

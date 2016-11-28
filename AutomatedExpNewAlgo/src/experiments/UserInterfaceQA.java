@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -78,6 +79,10 @@ public class UserInterfaceQA{
 	//behaviour-modailities to use
 	static String [] rc_behavior_modalities = {"drop_audio", "revolve_audio","push_audio", "hold_haptics","lift_haptics",
 			"press_haptics","squeeze_haptics","grasp_size", "shake_audio", "look_color","look_shape"};  
+	
+	//attributes to be learned
+	static String[] attributes = {"color", "shape"};
+			//, "size", "weight", "material", "deformable", "has_contents", "height"};
 					
 	// Modalities that have been taken out
 	// grasp-audio, hold-audio, lift-audio, poke-audio, press-audio, squeeze-audio, drop-haptics,
@@ -105,15 +110,22 @@ public class UserInterfaceQA{
 	static HashMap<ClusterDB, ObjectClusterer> objectClusterTable = new HashMap<ClusterDB, ObjectClusterer>();
     
     // To store the test and training objects for each modality
-    static ArrayList<String> test_objects, objects;
+    //static ArrayList<String> test_objects;
+	static ArrayList<String> objects;
 	static boolean firstTime;
 	static String global_attr = "";
 	static Pair globalContextPair = null;
 
 	public static void main(String[] args) {
-		// Load the ground truth table as its needed to get the labels
-		loadGroundTruthTable();
-	
+		//load object IDs into ground truth table. Leave attribute and attr label empty for now. 
+		DataLoaderCY DL = new DataLoaderCY();
+		ArrayList<String> object_list = DL.getObjectList();
+		
+		for(int i=0;i<object_list.size();i++){
+			HashMap<String, String> tuple = new HashMap<String, String>();
+			groundTruthTable.put(object_list.get(i), tuple);
+		}
+		
 		try{
 			// Check if the first request is for a new cluster
 			File req = new File("/home/priyanka/Desktop/groundedRequest.txt");
@@ -144,26 +156,22 @@ public class UserInterfaceQA{
 			if(validReq){
 				// WE WANT TO HAVE 10 TRIALS WITH DIFFERENT TEST SETS
 				// Train and test sets are created in this way -> generate a set a 10 seeds first
-				int seed = randomGenerator(78, 1000);
+				int seed = randomGenerator();
 				
-				for (int j=0;j<rc_behavior_modalities.length; j++){
-					System.out.println("*************** Computing for modality: " + rc_behavior_modalities[j] + " *******************");
-					modality = rc_behavior_modalities[j];
+				for(int m=0;m<attributes.length; m++){
+					global_attr = attributes[m];
+					System.out.println("******** Learning the attribute: " + global_attr + " ********");
+					modality = chooseContextToClusterFrom(global_attr);
+					System.out.println("*************** Picking clusters from modality: " + modality + " *******************");
+					
+					// Have a writer for results
 					String[] rc_behavior_modality = new String[1];
-					rc_behavior_modality[0] = rc_behavior_modalities[j];
-	
-					// After the clusters are computed, create the labelled data for all modalities
-					// loadLabelledData(rc_behavior_modalities);
+					rc_behavior_modality[0] = modality;
 					
 					// Set up the result file path
-					// USUAL PATH
-					//File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp3/" + rc_behavior_modalities[j]);
-					
-					// PATH FOR EXTRA QUESTION COUNT - COMMENT OUT LATER
-					File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/results_exp3QC/" + rc_behavior_modalities[j]);
-					
+					File results_filepath = new File("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/UserInterfaceResults1/" + global_attr + "/" + modality);
 					results_filepath.mkdirs();
-					
+				
 					firstTime = true;
 					int random = (int)Math.random();
 					PrintWriter writer = new PrintWriter(results_filepath + "/result_" + random + ".txt", "UTF-8");
@@ -174,7 +182,7 @@ public class UserInterfaceQA{
 					computePairwiseSimilarityMatrices(rc_behavior_modality, seed);
 					
 					// Get clusters starting from depth = 2
-					ArrayList<ObjectClusterer> result = getClustersAtDepth(rc_behavior_modalities[j], 2);
+					ArrayList<ObjectClusterer> result = getClustersAtDepth(modality, 2);
 					
 					Collections.shuffle(result);
 					
@@ -182,7 +190,7 @@ public class UserInterfaceQA{
 					labelTable = new HashMap<Pair, ArrayList<Triple> >();
 					
 					// Get clusterNumber
-					ClusterDB DB = behavior_modality_clusters.get(rc_behavior_modalities[j]);
+					ClusterDB DB = behavior_modality_clusters.get(modality);
 					
 					//firstTime = true;
 					// Do the following for each cluster starting at depth = 2
@@ -190,7 +198,7 @@ public class UserInterfaceQA{
 						//System.out.println("Sending clusters to display: " + result.get(i).getIDs());
 						
 						// The following is used to select clusters with 5 or less objects only
-						selectClustersToDisplay(rc_behavior_modalities[j], DB, result.get(i), writer);
+						selectClustersToDisplay(modality, DB, result.get(i), writer);
 					}
 					
 					while(DB.checkForOutliers()){
@@ -198,7 +206,7 @@ public class UserInterfaceQA{
 						HashMap<Integer, ArrayList<String>> outliersWithClusters = new HashMap<Integer, ArrayList<String>>();
 						
 						// Send out all outliers to ask user for the number of categories
-						int outlier_categories = createResponseFileForKMeans(DB.getOutlierObjects(), rc_behavior_modalities[j]);
+						int outlier_categories = createResponseFileForKMeans(DB.getOutlierObjects(), modality);
 						
 						System.out.println("The outlier have " + outlier_categories + " categories");
 						
@@ -220,7 +228,7 @@ public class UserInterfaceQA{
 							//System.out.println("Current cluster: " + currentCluster);
 							//System.out.println("Current cluster: " + outliersWithClusters.get(clusterNum).toString());
 							//System.out.println("Current modality: " + rc_behavior_modalities[j]);
-							createResponseFileForOutliers(rc_behavior_modalities[j], DB, outliersWithClusters.get(clusterNum), currentCluster, writer);
+							createResponseFileForOutliers(modality, DB, outliersWithClusters.get(clusterNum), currentCluster, writer);
 						}
 					}
 					// Reset everything
@@ -229,22 +237,107 @@ public class UserInterfaceQA{
 					questionCount = 0;
 					questionCount2 = 0;
 					DB.clearOutlierObjectsList();
+					
+					// Print out ground truth table
+					Iterator it = groundTruthTable.entrySet().iterator();
+					while (it.hasNext()) {
+				        Map.Entry pair = (Map.Entry)it.next();
+			        	HashMap<String, String> tuple = (HashMap<String, String>) pair.getValue();
+			        	Iterator it2 = tuple.entrySet().iterator();
+			        	while(it2.hasNext()){
+			        		Map.Entry pair2 = (Map.Entry)it2.next();
+			        		System.out.println(pair.getKey() + " ---> " + pair2.getKey() + " ---> " + pair2.getValue());
+			        	}
+					}
 				}
 				System.out.println("Done with all modalities");
 				createEndFile();
 				
+				//Write out the ground truth table to a file
+				writeGroundTruthTable();
+				
 				// Find the max of all results and also get all the points and put it into a .csv file
-				System.out.println("Now computing the ultimate max");
-				findMaxInstances(rc_behavior_modalities);
-				findUltimateMax(rc_behavior_modalities);
 				System.out.println("Producing points to plot");
-				createCSVFile(rc_behavior_modalities);
+				//createCSVFile(rc_behavior_modalities);
 				System.out.println("DONE!");
 				System.out.println("Changing modalities");
 		}
 		} catch(Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	// Method to write out the ground truth table to a file
+	public static void writeGroundTruthTable(){
+		// Filepath to store ground truth table in
+		String filePath = "/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/UserInterfaceResults1/groundTruthTable.csv";
+		
+		try{
+			PrintWriter writer = new PrintWriter(filePath, "UTF-8");
+			writer.println("object_names, color, shape, material, has_contents, height, weight, deformable, size");
+			
+			Iterator it = groundTruthTable.entrySet().iterator();
+			while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+	        	HashMap<String, String> tuple = (HashMap<String, String>) pair.getValue();
+	        	Iterator it2 = tuple.entrySet().iterator();
+	        	String[] values = new String[8];
+	        	while(it2.hasNext()){
+	        		Map.Entry pair2 = (Map.Entry)it2.next();
+	        		if(pair2.getKey().equals("color"))
+	        			values[0] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("shape"))
+	        			values[1] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("material"))
+	        			values[2] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("has_contents"))
+	        			values[3] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("height"))
+	        			values[4] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("weight"))
+	        			values[5] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("deformable"))
+	        			values[6] = (String)pair2.getValue();
+	        		if(pair2.getKey().equals("size"))
+	        			values[7] = (String)pair2.getValue();
+	        	}
+	        	writer.print(pair.getKey() + ",");
+	        	for(int j=0;j<values.length;j++){
+	        		if(j != values.length-1)
+	        			writer.print(values[j] + ",");
+	        		else
+	        			writer.print(values[j]);
+	        	}
+	        	writer.println();
+			}
+			writer.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	// Method which gives the context-attr mapping deduced from ContextAttrMappingEXP
+	public static String chooseContextToClusterFrom(String attribute){
+		String rc_modality = "";
+		if(attribute == "size")
+			rc_modality = "grasp_size";
+		if(attribute == "material")
+			rc_modality = "drop_audio";
+		if(attribute == "has_contents")
+			rc_modality = "revolve_haptics";	
+		if(attribute == "weight")
+			rc_modality = "drop_haptics";
+		if(attribute == "height")
+			rc_modality = "squeeze_haptics";
+		if(attribute == "deformable")
+			rc_modality = "lift_haptics";
+		if(attribute == "color")
+			rc_modality = "look_color";
+		if(attribute == "shape")
+			rc_modality = "look_shape";
+		
+		return rc_modality;
 	}
 	
 	// Do KNN with outliers and get labels for them as well
@@ -258,28 +351,33 @@ public class UserInterfaceQA{
 		FeatureDataLoader FDL = new FeatureDataLoader();
 		
 		//load pre-computed features
-		FDL.loadContextsDataWithLabels(rc_behavior_modalities);
+		FDL.loadContextsData(rc_behavior_modalities);
 		
 		// Create instances 
 		DataLoaderCY DL = new DataLoaderCY();
 		ArrayList<String> objects_list = DL.getObjectList();
-		HashMap<String, String> object_labels = new HashMap<String, String>();
+		//HashMap<String, String> object_labels = new HashMap<String, String>();
 		
 		System.out.println("Modality at this point: " + modality);
 		
 		String attr = getAttributeForModality(modality);
 		
 		// Get the labels of all the objects to compare our classifiers against
-		for(int l=0;l<objects_list.size();l++){
+		/*for(int l=0;l<objects_list.size();l++){
 			HashMap<String, String> combination = groundTruthTable.get(objects_list.get(l)); 
 			String label = combination.get(attr);
 			object_labels.put(objects_list.get(l), label);	 
+		}*/
+		
+		// Create a redundant Hashmap of object names to object names as its required by ClassLabelID
+		HashMap<String, String> object_object = new HashMap<String, String>();
+		for(int l=0;l<outlier_objects.size();l++){
+			object_object.put(outlier_objects.get(l), outlier_objects.get(l));
 		}
 		
 		//labeling function labels trials by labels
-		IClassLabelFunction LF = new ClassLabelID(objects_list, object_labels);
-		ArrayList<String> class_values = LF.getValueSet();
-		//System.out.println("Class values in build classifier: " + class_values.toString());
+		IClassLabelFunction LF = new ClassLabelID(outlier_objects, object_object);
+		ArrayList<String> class_values = LF.getUniqueValueSet(outlier_objects);
 		String [] classVals = new String[class_values.size()];
 		for (int f = 0; f < class_values.size(); f++)
 			classVals[f]=class_values.get(f);
@@ -288,7 +386,7 @@ public class UserInterfaceQA{
 		ContextInstancesCreator IC = new ContextInstancesCreator();
 		IC.setLabelFunction(LF);
 		IC.setData(FDL.getData(modality));
-		IC.generateHeader();
+		IC.generateHeader(outlier_objects, objects_list);
 				
 		//full set of trials for training	
 		// THE FOLLOWING CODE IS TO CLASSIFY EACH INSTANCE SEPARATELY
@@ -296,7 +394,6 @@ public class UserInterfaceQA{
 		
 		Instances train = IC.generateFullSet(train_trials);
 		System.out.println("Training instances: " + train.numInstances());*/
-		
 		
 		Instances train = IC.generateAveragedFullSet(outlier_objects, 6);
 
@@ -486,17 +583,6 @@ public class UserInterfaceQA{
 		return outlier_categories;
 	}
 	
-	public static void loadLabelledData(String[] rc_behavior_modalities){
-		DataLoaderCY DL = new DataLoaderCY();
-		ArrayList<String> objects_list = DL.getObjectList();
-		
-		FeatureDataLoader FDL = new FeatureDataLoader();
-		
-		// Create the files which have the object data along with the labels for all modalities
-		for(int g=0;g<rc_behavior_modalities.length;g++)
-			FDL.createContextDataWithLabels(groundTruthTable, getAttributeForModality(rc_behavior_modalities[g]) , rc_behavior_modalities[g], objects_list);
-	}
-	
 	public static void createEndFile(){
 		//System.out.println("Creating an end program file");
 		try{
@@ -564,63 +650,15 @@ public class UserInterfaceQA{
 		}
 	}
 
-	/*
-	 * Outputs a convoluted table in hashmaps after the input of the grounded truth.
-	 * Maps: obj_name -> attribute_name (eg color) -> value
-	 * The following attributes have numerical output: height weight and width
-	 */
-	static void loadGroundTruthTable(){
-		try{
-			BufferedReader in = new BufferedReader(new FileReader("/home/priyanka/Documents/grounded_language_learning/AutomatedExpNewAlgo/src/etc/attributesGroundTruthTable.csv"));
-			String attributes[] = new String[9];
-			//grab all the attribute names. Note that these should match that is output
-			//by the modified weka program
-			String line;
-			if((line = in.readLine()) != null){
-				StringTokenizer tokenizer = new StringTokenizer(line,",");
-				int columnNum = 0;
-				
-				// Skip the first token as its "object_names"
-				tokenizer.nextToken();
-				
-				while (tokenizer.hasMoreTokens()){
-					//System.out.println("Token: " + tokenizer.nextToken());
-					attributes[columnNum] = tokenizer.nextToken();
-					columnNum++;
-				}
-			}
-
-			//build the rest of the table
-			while((line = in.readLine()) != null){
-				StringTokenizer tokenizer = new StringTokenizer(line,","); 
-				int columnNum = 0;
-				HashMap<String,String> attrTruthTable = new HashMap<String,String>();
-
-				String name = tokenizer.nextToken();
-				
-				while (tokenizer.hasMoreTokens()){ 
-					attrTruthTable.put(attributes[columnNum], tokenizer.nextToken());
-					columnNum++;
-				}
-				
-				groundTruthTable.put(name,attrTruthTable);
-			}
-
-			in.close();
-		} catch(IOException e){
- 		 e.printStackTrace();
-		}
-		//return groundTruthTable;
-	}
-	
 	public static void computePairwiseSimilarityMatrices(String[] rc_behavior_modalities, int seed) throws Exception{
 		DataLoaderCY DL = new DataLoaderCY();
 		ArrayList<String> object_list = DL.getObjectList();
 		
 		// Generate the test and training object sets if its the first time
 		if(firstTime == true){
-			test_objects = DL.getRandomTestObjectSet(object_list, seed);
-			objects = DL.getRandomTrainObjectSet(object_list, test_objects);
+			//test_objects = DL.getRandomTestObjectSet(object_list, seed);
+			//objects = DL.getRandomTrainObjectSet(object_list, test_objects);
+			objects = object_list;
 		}
 		
 		/*for(int i=0; i<test_objects.size(); i++){
@@ -639,18 +677,23 @@ public class UserInterfaceQA{
 			//System.out.print("Computing similarity for context:\t["+rc_behavior_modalities[b]+"]\n\t");
 			
 			String attr = getAttributeForModality(rc_behavior_modalities[b]);
-			HashMap<String, String> object_labels = new HashMap<String, String>();
 			
 			// Get the labels of all the objects to compare our classifiers against. This will not be used in this part but needed.
-			for(int l=0;l<objects.size();l++){
+			/*for(int l=0;l<objects.size();l++){
 				HashMap<String, String> combination = groundTruthTable.get(objects.get(l)); 
 				String label = combination.get(attr);
 				object_labels.put(objects.get(l), label);	
+			}*/
+			
+			// Create a redundant Hashmap of object names to object names as its required by ClassLabelID
+			HashMap<String, String> object_object = new HashMap<String, String>();
+			for(int l=0;l<objects.size();l++){
+				object_object.put(objects.get(l), objects.get(l));
 			}
 			
 			//labeling function labels trials by labels
-			IClassLabelFunction LF = new ClassLabelID(objects, object_labels);
-			ArrayList<String> class_values = LF.getValueSet();
+			IClassLabelFunction LF = new ClassLabelID(objects, object_object);
+			ArrayList<String> class_values = LF.getUniqueValueSet(objects);
 			String [] classVals = new String[class_values.size()];
 			for (int f = 0; f < class_values.size(); f++)
 				classVals[f]=class_values.get(f);
@@ -659,7 +702,7 @@ public class UserInterfaceQA{
 			ContextInstancesCreator IC = new ContextInstancesCreator();
 			IC.setLabelFunction(LF);
 			IC.setData(FDL.getData(rc_behavior_modalities[b]));
-			IC.generateHeader();
+			IC.generateHeader(objects, objects);
 			
 			//full set of trials for training
 			ArrayList<InteractionTrial> train_trials = DL.generateTrials(objects, 6);
@@ -749,8 +792,8 @@ public class UserInterfaceQA{
 			
 			behavior_modality_clusters.put(rc_behavior_modality, CDB);
 			
-			//System.out.println("\n\nObject Clustering:\n");
-			//OC.printClustering(2);
+			System.out.println("\n\nObject Clustering:\n");
+			OC.printClustering(2);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -1048,6 +1091,7 @@ public class UserInterfaceQA{
 	public static String ask_free_resp(String question, String modality){
 		//System.out.println("%%%%%% IN ASK_FREE_RESP %%%%%%%");
 		//Increment the questions asked by 1 every time this method is called
+		System.out.println("Modality in ask_free_resp: " + modality);
 		if(question.equals("For the forthcoming clusters, what feature/attribute of the object ")){
 			if(modality.equals("drop_audio"))
 				return "material";
@@ -1097,6 +1141,20 @@ public class UserInterfaceQA{
 					//System.out.println("Objects after updating a label: " + objects.size());
 					extant = true;
 				}
+				
+				// Add to the ground truth table
+				for(int t=0;t<cur_cluster.size();t++){
+					//Find the Object ID in the ground truth table
+					Iterator it = groundTruthTable.entrySet().iterator();
+					while (it.hasNext()) {
+				        Map.Entry pair = (Map.Entry)it.next();
+				        if(pair.getKey().equals(cur_cluster.get(t))){
+				        	HashMap<String, String> existing_pairs = (HashMap<String, String>) pair.getValue();
+				        	existing_pairs.put(global_attr, cluster_label);
+				        	groundTruthTable.put((String)pair.getKey(), existing_pairs);
+				        }
+					}
+				}
 			}
 			//labelTable.put(globalContextPair, values);
 			
@@ -1108,6 +1166,20 @@ public class UserInterfaceQA{
 				labelTable.put(globalContextPair, values);
 				//System.out.println("Values after adding a new label: " + values.size());
 				extant = true;
+				
+				// Add to the ground truth table
+				for(int t=0;t<cur_cluster.size();t++){
+					//Find the Object ID in the ground truth table
+					Iterator it = groundTruthTable.entrySet().iterator();
+					while (it.hasNext()) {
+				        Map.Entry pair = (Map.Entry)it.next();
+				        if(pair.getKey().equals(cur_cluster.get(t))){
+				        	HashMap<String, String> existing_pairs = (HashMap<String, String>) pair.getValue();
+				        	existing_pairs.put(global_attr, cluster_label);
+				        	groundTruthTable.put((String)pair.getKey(), existing_pairs);
+				        }
+					}
+				}
 			}
 			
 			// Print out the label table after adding or updating anything
@@ -1173,8 +1245,23 @@ public class UserInterfaceQA{
 					values.add(update);								//finally add back the updated triple
 					System.out.println("Objects after updating a label: " + labelled_objects.size());
 					extant = true;
+					
+					// Add to the ground truth table
+					for(int t=0;t<cur_cluster.size();t++){
+						//Find the Object ID in the ground truth table
+						Iterator it = groundTruthTable.entrySet().iterator();
+						while (it.hasNext()) {
+					        Map.Entry pair = (Map.Entry)it.next();
+					        if(pair.getKey().equals(cur_cluster.get(t))){
+					        	HashMap<String, String> existing_pairs = (HashMap<String, String>) pair.getValue();
+					        	existing_pairs.put(global_attr, cluster_label);
+					        	groundTruthTable.put((String)pair.getKey(), existing_pairs);
+					        }
+						}
+					}
 				}
 			}
+			
 			//labelTable.put(globalContextPair, values);
 			
 			if(extant == false){											//label doesn't exist in table. Create it
@@ -1186,6 +1273,20 @@ public class UserInterfaceQA{
 				labelTable.put(globalContextPair, values);
 				System.out.println("Values after adding a new label: " + values.size() + " after adding the label " + cluster_label);
 				extant = true;
+				
+				// Add to the ground truth table
+				for(int t=0;t<cur_cluster.size();t++){
+					//Find the Object ID in the ground truth table
+					Iterator it = groundTruthTable.entrySet().iterator();
+					while (it.hasNext()) {
+				        Map.Entry pair = (Map.Entry)it.next();
+				        if(pair.getKey().equals(cur_cluster.get(t))){
+				        	HashMap<String, String> existing_pairs = (HashMap<String, String>) pair.getValue();
+				        	existing_pairs.put(global_attr, cluster_label);
+				        	groundTruthTable.put((String)pair.getKey(), existing_pairs);
+				        }
+					}
+				}
 			}
 			
 			// Print out the label table after adding or updating anything
@@ -1215,47 +1316,49 @@ public class UserInterfaceQA{
 		// new Triple(att_from_above, cur_cluster, questions_per_label);
 		try{
 			// To have a mapping between each object and its label
-			HashMap<String, String> object_labels = new HashMap<String, String>();
-			HashMap<String, String> training_object_labels = new HashMap<String, String>();
+			//HashMap<String, String> object_labels = new HashMap<String, String>();
+			//HashMap<String, String> training_object_labels = new HashMap<String, String>();
 			ArrayList<String> training_objs = new ArrayList<String>();
-			DataLoaderCY DL = new DataLoaderCY();
+			//DataLoaderCY DL = new DataLoaderCY();
 			
-			FeatureDataLoader FDL = new FeatureDataLoader();
+			//FeatureDataLoader FDL = new FeatureDataLoader();
 			
 			//load pre-computed features
-			FDL.loadContextsDataWithLabels(rc_behavior_modalities);
+			//FDL.loadContextsData(rc_behavior_modalities);
 			
 			for(int i = 0; i<labelTriple.size(); i++){
 				// Get the objects in the cluster and its label
-				ArrayList<String> cluster_objs = new ArrayList<String> ();
-				String cluster_label = labelTriple.get(i).getLabel();
+				//ArrayList<String> cluster_objs = new ArrayList<String> ();
+				//String cluster_label = labelTriple.get(i).getLabel();
 				for(int j=0; j<labelTriple.get(i).getObjects().size(); j++){
-					cluster_objs.add(labelTriple.get(i).getObjects().get(j));
+					//cluster_objs.add(labelTriple.get(i).getObjects().get(j));
 					training_objs.add(labelTriple.get(i).getObjects().get(j));
 				}
 				
 				// Get the labels of all the training objects to compare our classifiers against
-				for(int l=0;l<cluster_objs.size();l++){
-					HashMap<String, String> combination = groundTruthTable.get(cluster_objs.get(l)); 
+				/*for(int l=0;l<cluster_objs.size();l++){
+					//HashMap<String, String> combination = groundTruthTable.get(cluster_objs.get(l)); 
 					training_object_labels.put(cluster_objs.get(l), cluster_label);	
-				}
+				}*/
 			}
 
 			// Create instances 
-			ArrayList<String> objects_list = DL.getObjectList();
+			/*ArrayList<String> objects_list = DL.getObjectList();
 			
 			String attr = getAttributeForModality(modality);
 			
 			// Get the labels of all the objects to compare our classifiers against
-			for(int l=0;l<objects_list.size();l++){
-				HashMap<String, String> combination = groundTruthTable.get(objects_list.get(l)); 
+			// Add the training objects
+			for(int l=0;l<training_objs.size();l++){
+				HashMap<String, String> combination = groundTruthTable.get(training_objs.get(l)); 
 				String label = combination.get(attr);
-				object_labels.put(objects_list.get(l), label);	
+				object_labels.put(training_objs.get(l), label);	
 			}
 			
 			//labeling function labels trials by labels
-			IClassLabelFunction LF = new ClassLabelID(objects_list, object_labels);
-			ArrayList<String> class_values = LF.getValueSet();
+			IClassLabelFunction LF = new ClassLabelID(training_objs, training_object_labels);
+			ArrayList<String> allClassValues = LF.getValueSet(training_objs);      // This one has each of the class values including duplicates
+			ArrayList<String> class_values = LF.getUniqueValueSet(training_objs);   // This one does not have any duplicates
 			//System.out.println("Class values in build classifier: " + class_values.toString());
 			String [] classVals = new String[class_values.size()];
 			for (int f = 0; f < class_values.size(); f++)
@@ -1265,7 +1368,7 @@ public class UserInterfaceQA{
 			ContextInstancesCreator IC = new ContextInstancesCreator();
 			IC.setLabelFunction(LF);
 			IC.setData(FDL.getData(modality));
-			IC.generateHeader();
+			IC.generateHeader(training_objs, objects_list);
 					
 			//full set of trials for training			
 			//System.out.println("Training objects size: " + training_objs.size());
@@ -1295,7 +1398,7 @@ public class UserInterfaceQA{
 												
 			// Test on the test objects and store the accuracy
 			ArrayList<InteractionTrial> test_trials = DL.generateTrials(test_objects, 6);		 						
-			Instances test = IC.generateFullSet(test_trials);
+			Instances test = IC.generateFullSet(test_trials);*/
 			
 			// Print out the output to console
 			//System.out.println("Training objects: " + training_objs.toString());
@@ -1303,21 +1406,21 @@ public class UserInterfaceQA{
 			//System.out.println("\t\tNEW ITERATION: Train on "+train.numInstances()+" and test on "+ test.numInstances());
 			
 			// Write output to file
-			writer.println("Training objects: " + training_objs.toString());
-			writer.println("Test objects: " + test_objects.toString());
+			writer.println("\t\tNEW ITERATION: Train on "+training_objs.size() + " objects");
+			writer.println("Objects: " + training_objs.toString());
+			//writer.println("Test objects: " + test_objects.toString());
 			writer.println("Question Count (Not including Skip questions): " + questionCount2);
 			writer.println("Question Count: " + questionCount);
-			writer.println("\t\tNEW ITERATION: Train on "+train.numInstances()+" and test on "+ test.numInstances());
 						
-			EV.evaluateModel(C_boost, test);
+			//EV.evaluateModel(C_boost, test);
 			
 			// Write out the results to the file
 			//System.out.println(EV.toSummaryString());
 			//System.out.println(EV.toClassDetailsString());
 			//System.out.println("Kappa Statistics: " + EV.kappa());
-			writer.println(EV.toSummaryString());			
-			writer.println(EV.toClassDetailsString());
-			writer.println("Kappa Statistics: " + EV.kappa());
+			//writer.println(EV.toSummaryString());			
+			//writer.println(EV.toClassDetailsString());
+			//writer.println("Kappa Statistics: " + EV.kappa());
 			writer.println();
 				
 		}catch(Exception e){
@@ -1411,8 +1514,8 @@ public class UserInterfaceQA{
 	}
 	
 	// Method to generate the seed for trials
-	public static int randomGenerator(int seed, int max) {
-	    Random generator = new Random(seed);
+	public static int randomGenerator() {
+	    Random generator = new Random();
 	    int num = generator.nextInt();
 	    
 	    return num;
