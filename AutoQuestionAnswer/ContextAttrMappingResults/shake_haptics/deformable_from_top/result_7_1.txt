@@ -1,0 +1,69 @@
+Training objects: [silver_cappuccino_maker, yellow_water_bottle, wooden_knife_stand, wooden_melon_tea_box, yellow_squish_ball, red_water_bottle, tiny_metallic_can, scotch_tape_box, green_tall_cup, wooden_cylindrical_container, dark_blue_sunfounder_box, stainless_steel_cannister, regular_creamcheese_box, blue_salt_can, blue_tall_cup, christmas_red_container, mac_and_cheese_box, green_water_bottle]
+Test objects: [wooden_pepper_grinder, pale_yellow_cup, red_tall_cup, tin_can, lysol_container]
+Question Count (Not including Skip questions): 5
+Question Count: 5
+		NEW ITERATION: Train on 108 and test on 30
+
+Correctly Classified Instances          24               80      %
+Incorrectly Classified Instances         6               20      %
+Kappa statistic                          0     
+Mean absolute error                      0.2   
+Root mean squared error                  0.4472
+Relative absolute error                 97.3451 %
+Root relative squared error            100.9004 %
+Total Number of Instances               30     
+
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0          0         0         0          0.5      Deformable
+  1         1          0.8       1         0.889      0.5      Non-deformable
+
+Kappa Statistics: 0.0
+
+Training objects: [christmas_red_container, mac_and_cheese_box, green_water_bottle, silver_cappuccino_maker, yellow_water_bottle, wooden_knife_stand, wooden_melon_tea_box, yellow_squish_ball, red_water_bottle, tiny_metallic_can, scotch_tape_box, green_tall_cup, wooden_cylindrical_container, dark_blue_sunfounder_box, stainless_steel_cannister, regular_creamcheese_box, blue_salt_can, blue_tall_cup, blue_squish_ball, excetrine_medicine_box]
+Test objects: [wooden_pepper_grinder, pale_yellow_cup, red_tall_cup, tin_can, lysol_container]
+Question Count (Not including Skip questions): 6
+Question Count: 6
+		NEW ITERATION: Train on 120 and test on 30
+
+Correctly Classified Instances          24               80      %
+Incorrectly Classified Instances         6               20      %
+Kappa statistic                          0     
+Mean absolute error                      0.2   
+Root mean squared error                  0.4472
+Relative absolute error                 97.6    %
+Root relative squared error            100.8127 %
+Total Number of Instances               30     
+
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0          0         0         0          0.5      Deformable
+  1         1          0.8       1         0.889      0.5      Non-deformable
+
+Kappa Statistics: 0.0
+
+Training objects: [christmas_red_container, mac_and_cheese_box, green_water_bottle, silver_cappuccino_maker, yellow_water_bottle, wooden_knife_stand, wooden_melon_tea_box, yellow_squish_ball, red_water_bottle, tiny_metallic_can, scotch_tape_box, green_tall_cup, wooden_cylindrical_container, dark_blue_sunfounder_box, stainless_steel_cannister, regular_creamcheese_box, blue_salt_can, blue_tall_cup, blue_squish_ball, excetrine_medicine_box, dark_green_sports_bottle, starbucks_doubleshot_hazelnut, big_red_pop_can, red_ketchup_bottle, tennis_container_split_peas, red_bull_pop_can, yellow_mustard_bottle]
+Test objects: [wooden_pepper_grinder, pale_yellow_cup, red_tall_cup, tin_can, lysol_container]
+Question Count (Not including Skip questions): 8
+Question Count: 8
+		NEW ITERATION: Train on 162 and test on 30
+
+Correctly Classified Instances          24               80      %
+Incorrectly Classified Instances         6               20      %
+Kappa statistic                          0.2857
+Mean absolute error                      0.1999
+Root mean squared error                  0.447 
+Relative absolute error                 55.9562 %
+Root relative squared error            110.435  %
+Total Number of Instances               30     
+
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0.333     0.083      0.5       0.333     0.4        0.906    Deformable
+  0.917     0.667      0.846     0.917     0.88       0.906    Non-deformable
+
+Kappa Statistics: 0.2857142857142859
+

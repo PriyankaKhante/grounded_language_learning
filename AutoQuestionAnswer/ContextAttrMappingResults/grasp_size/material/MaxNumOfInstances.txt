@@ -1,0 +1,19 @@
+		NEW ITERATION: Train on 90 and test on 30
+Correctly Classified Instances          24               80      %
+  Incorrectly Classified Instances         6               20      %
+  Kappa statistic                          0.7087
+  Mean absolute error                      0.1035
+  Root mean squared error                  0.3159
+  Relative absolute error                 30.8914 %
+  Root relative squared error             73.0385 %
+  Total Number of Instances               30     
+  
+  === Detailed Accuracy By Class ===
+  
+  TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+    1         0          1         1         1          1        plastic
+    1         0.208      0.545     1         0.706      0.882    metal
+    0         0.033      0         0         0          ?        wood
+    0.5       0          1         0.5       0.667      0.773    paper
+  
+ 

@@ -1,0 +1,572 @@
+		NEW ITERATION: Train on 2 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:41.594202898550726	12.13849229390051
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0.75      0          1         0.75      0.857      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  1         0.625      0.286     1         0.444      ?        spherical
+
+
+Correctly Classified Instances          15               50      %
+Incorrectly Classified Instances        15               50      %
+Kappa statistic                          0.3243
+Mean absolute error                      0.3597
+Root mean squared error                  0.4907
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 3 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:43.62318840579711	11.232755289428429
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.222      0.75      1         0.857      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  1         0.333      0.429     1         0.6        ?        spherical
+
+
+Correctly Classified Instances          18               60      %
+Incorrectly Classified Instances        12               40      %
+Kappa statistic                          0.4231
+Mean absolute error                      0.3523
+Root mean squared error                  0.4757
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 4 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:47.68115942028986	10.270816880984833
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.278      0.706     1         0.828      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  1         0.292      0.462     1         0.632      ?        spherical
+
+
+Correctly Classified Instances          18               60      %
+Incorrectly Classified Instances        12               40      %
+Kappa statistic                          0.4175
+Mean absolute error                      0.3353
+Root mean squared error                  0.4704
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 5 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:46.811594202898554	9.016161744086045
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.444      0.6       1         0.75       ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.833     0.208      0.5       0.833     0.625      ?        spherical
+
+
+Correctly Classified Instances          17               56.6667 %
+Incorrectly Classified Instances        13               43.3333 %
+Kappa statistic                          0.35  
+Mean absolute error                      0.3371
+Root mean squared error                  0.4748
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 6 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:46.811594202898554	9.182672575335769
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.556      0.545     1         0.706      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.833     0.125      0.625     0.833     0.714      ?        spherical
+
+
+Correctly Classified Instances          17               56.6667 %
+Incorrectly Classified Instances        13               43.3333 %
+Kappa statistic                          0.3367
+Mean absolute error                      0.335 
+Root mean squared error                  0.4716
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 7 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:45.5072463768116	7.078827133646842
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.833      0.444     1         0.615      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.5       0          1         0.5       0.667      ?        spherical
+
+
+Correctly Classified Instances          15               50      %
+Incorrectly Classified Instances        15               50      %
+Kappa statistic                          0.1935
+Mean absolute error                      0.3556
+Root mean squared error                  0.5224
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 8 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:44.78260869565217	5.488839637131334
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.889      0.429     1         0.6        ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.333     0          1         0.333     0.5        ?        spherical
+
+
+Correctly Classified Instances          14               46.6667 %
+Incorrectly Classified Instances        16               53.3333 %
+Kappa statistic                          0.1304
+Mean absolute error                      0.363 
+Root mean squared error                  0.5382
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 9 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:44.78260869565217	6.803600276600654
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.833      0.444     1         0.615      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.5       0          1         0.5       0.667      ?        spherical
+
+
+Correctly Classified Instances          15               50      %
+Incorrectly Classified Instances        15               50      %
+Kappa statistic                          0.1935
+Mean absolute error                      0.3541
+Root mean squared error                  0.539 
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 10 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:43.913043478260875	7.4976207615404435
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.889      0.429     1         0.6        ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.333     0          1         0.333     0.5        ?        spherical
+
+
+Correctly Classified Instances          14               46.6667 %
+Incorrectly Classified Instances        16               53.3333 %
+Kappa statistic                          0.1304
+Mean absolute error                      0.3646
+Root mean squared error                  0.5387
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 11 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:44.347826086956516	6.9219882856709996
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3624
+Root mean squared error                  0.5482
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 12 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:46.52173913043478	7.140598174697307
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.167     0          1         0.167     0.286      ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0659
+Mean absolute error                      0.3507
+Root mean squared error                  0.5255
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 13 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:46.23188405797102	7.674195764535217
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.167     0          1         0.167     0.286      ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0659
+Mean absolute error                      0.3478
+Root mean squared error                  0.5237
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 14 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:45.07246376811595	6.184827085551569
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.167     0          1         0.167     0.286      ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0659
+Mean absolute error                      0.3595
+Root mean squared error                  0.5423
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 15 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:45.072463768115945	6.656777909678161
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3669
+Root mean squared error                  0.5441
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 16 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:45.79710144927536	7.66847088812158
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.167     0          1         0.167     0.286      ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0659
+Mean absolute error                      0.3621
+Root mean squared error                  0.5283
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 17 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:46.66666666666667	9.898474527915784
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3514
+Root mean squared error                  0.4933
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 18 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:44.34782608695652	9.069584123343226
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3697
+Root mean squared error                  0.5223
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 19 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:43.76811594202899	5.971679612980569
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3762
+Root mean squared error                  0.5405
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 20 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:44.34782608695652	8.61258080308055
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3576
+Root mean squared error                  0.5112
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 21 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:43.18840579710144	9.871817905387918
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3769
+Root mean squared error                  0.5437
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 22 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:43.47826086956522	7.6196357762820615
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3759
+Root mean squared error                  0.546 
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 23 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup, regular_creamcheese_box]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:49.130434782608695	10.741094093602559
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3163
+Root mean squared error                  0.4492
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 24 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup, regular_creamcheese_box, tiny_metallic_can]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:48.84057971014492	10.230114766389946
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3237
+Root mean squared error                  0.4654
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 25 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup, regular_creamcheese_box, tiny_metallic_can, wooden_pepper_grinder]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:50.14492753623187	8.959970512530766
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         1          0.4       1         0.571      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          12               40      %
+Incorrectly Classified Instances        18               60      %
+Kappa statistic                          0     
+Mean absolute error                      0.3288
+Root mean squared error                  0.4757
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 26 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup, regular_creamcheese_box, tiny_metallic_can, wooden_pepper_grinder, lysol_container]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:48.985507246376805	10.983678552936578
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0         0          0         0         0          ?        cuboid
+  0.167     0          1         0.167     0.286      ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0659
+Mean absolute error                      0.3231
+Root mean squared error                  0.4726
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 27 and test on 5 objects
+Train objects: [blue_salt_can, blue_squish_ball, silver_cappuccino_maker, christmas_red_container, tennis_container_split_peas, blue_tall_cup, big_red_pop_can, tin_can, yellow_mustard_bottle, starbucks_doubleshot_hazelnut, dark_green_sports_bottle, mac_and_cheese_box, red_bull_pop_can, green_tall_cup, green_water_bottle, wooden_knife_stand, wooden_melon_tea_box, red_water_bottle, pale_yellow_cup, yellow_water_bottle, wooden_cylindrical_container, red_tall_cup, regular_creamcheese_box, tiny_metallic_can, wooden_pepper_grinder, lysol_container, excetrine_medicine_box]
+Test objects: [dark_blue_sunfounder_box, scotch_tape_box, stainless_steel_cannister, yellow_squish_ball, red_ketchup_bottle]
+Mean and variance of single behavior acc:52.02898550724638	13.474222693975756
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  1         0.944      0.414     1         0.585      ?        cylindrical
+  0.083     0          1         0.083     0.154      ?        cuboid
+  0         0          0         0         0          ?        spherical
+
+
+Correctly Classified Instances          13               43.3333 %
+Incorrectly Classified Instances        17               56.6667 %
+Kappa statistic                          0.0556
+Mean absolute error                      0.2964
+Root mean squared error                  0.4211
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+

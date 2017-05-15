@@ -173,7 +173,8 @@ public class DataLoaderCY {
 		ArrayList<String> objects = new ArrayList<String>();
 		
 		try {
-			BufferedReader BR = new BufferedReader(new FileReader(new File("/home/users/pkhante/extracted_feature_vectors/object_list.csv")));
+			//BufferedReader BR = new BufferedReader(new FileReader(new File("/home/users/pkhante/extracted_feature_vectors/object_list.csv")));
+			BufferedReader BR = new BufferedReader(new FileReader(new File("/Users/Priyanka/Downloads/extracted_feature_vectors/object_list.csv")));
 			
 			while (true){
 				String line = BR.readLine();

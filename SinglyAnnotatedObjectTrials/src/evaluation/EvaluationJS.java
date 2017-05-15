@@ -293,7 +293,7 @@ public class EvaluationJS implements Summarizable {
 	 m_ConfusionMatrix = new double [m_NumClasses][m_NumClasses];
 	 m_ClassNames = new String [m_NumClasses];
 	 for(int i = 0; i < m_NumClasses; i++) {
-	m_ClassNames[i] = data.classAttribute().value(i);
+		 m_ClassNames[i] = data.classAttribute().value(i);
 	 }
 	}
 	m_CostMatrix = costMatrix;
@@ -1312,7 +1312,7 @@ public class EvaluationJS implements Summarizable {
    * @return the number of correctly classified instances
    */
   public final double correct() {
-
+    
     return m_Correct;
   }
 
@@ -1790,7 +1790,7 @@ public class EvaluationJS implements Summarizable {
     }
 
     return text.toString(); 
-  }
+  } 
 
   /**
    * Calls toMatrixString() with a default title.
@@ -2548,10 +2548,8 @@ public class EvaluationJS implements Summarizable {
 					Instance instance)
        throws Exception {
 
-	  
-	  
-	  
     int actualClass = (int)instance.classValue();
+   
     double costFactor = 1;
 
     if (!instance.classIsMissing()) {

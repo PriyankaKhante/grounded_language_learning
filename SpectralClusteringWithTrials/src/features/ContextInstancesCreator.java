@@ -140,7 +140,10 @@ public class ContextInstancesCreator {
 			for (int i = 0; i < f.length; i++)
 				inst.setValue(i, f[i]);
 			
+			// UNCOMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
 			inst.setValue(dataHeader.classAttribute(), class_val);
+			// COMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
+			//inst.setValue(dataHeader.numAttributes()-1, class_val);
 			
 			return inst;
 		}
@@ -166,7 +169,7 @@ public class ContextInstancesCreator {
 		attrInfo.addElement(classAttr);
 		
 		dataHeader = new Instances("data", attrInfo, 0);
+		// UNCOMMENT THE FOLLOWING FOR SPECTRAL CLUSTERING
 		dataHeader.setClassIndex(dataHeader.numAttributes()-1);
 	}
-	
 }

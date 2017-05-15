@@ -1,0 +1,18 @@
+		NEW ITERATION: Train on 60 and test on 30
+Correctly Classified Instances           6               20      %
+ Incorrectly Classified Instances        24               80      %
+ Kappa statistic                          0     
+ Mean absolute error                      0.2345
+ Root mean squared error                  0.4764
+ Relative absolute error                101.8274 %
+ Root relative squared error            139.4831 %
+ Total Number of Instances               30     
+ 
+ === Detailed Accuracy By Class ===
+ 
+ TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+   0.667     0.208      0.444     0.667     0.533      0.764    green
+   0         0          0         0         0          0.333    silver
+   0.333     0.25       0.25      0.333     0.286      0.319    yellow
+   0         0.458      0         0         0          0.09     red
+ 

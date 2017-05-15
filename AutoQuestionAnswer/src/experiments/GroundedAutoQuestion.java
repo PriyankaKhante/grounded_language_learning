@@ -26,10 +26,6 @@ import GroundedLanguage.*;
  Questions holds the number of questions required to obtain this pairing
  */
 
-//************** TODO:
-// 1) QuestionCount and questions_per_label are totally off
-//********************
-
 public class GroundedAutoQuestion {
 	public static final String filePath = "/home/users/pkhante/Pictures/grounded_learning_images/";
 	//public static final String reqFilePath	= "/home/users/pkhante/Desktop/";

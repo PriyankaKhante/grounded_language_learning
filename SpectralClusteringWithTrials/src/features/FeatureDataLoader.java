@@ -138,6 +138,69 @@ public class FeatureDataLoader {
 		}
 	}
 	
+	// Read in the actual data file and create a new file with the averaged data
+	public ContextFeatureData loadAveragedContextData(String bm){
+		String filePath = "";
+		if (bm.equals("drop_audio"))
+			filePath = audio_path+"/drop_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("grasp_audio"))
+			//filePath = audio_path+"/grasp_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("hold_audio"))
+			//filePath = audio_path+"/hold_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("lift_audio"))
+			//filePath = audio_path+"/lift_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("poke_audio"))
+			//filePath = audio_path+"/poke_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("press_audio"))
+			//filePath = audio_path+"/press_audio/averaged_dft_extracted_features.csv";
+		else if (bm.equals("push_audio"))
+			filePath = audio_path+"/push_audio/averaged_dft_extracted_features.csv";
+		else if (bm.equals("revolve_audio"))
+			filePath = audio_path+"/revolve_audio/averaged_dft_extracted_features.csv";
+		else if (bm.equals("shake_audio"))
+			filePath = audio_path+"/shake_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("squeeze_audio"))
+			//filePath = audio_path+"/squeeze_audio/averaged_dft_extracted_features.csv";
+		//else if (bm.equals("drop_haptics"))
+			//filePath = haptics_path+"/drop_haptics/averaged_haptic_extracted_features.csv";
+		//else if (bm.equals("grasp_haptics"))
+			//filePath = haptics_path+"/grasp_haptics/averaged_haptic_extracted_features.csv";
+		else if (bm.equals("hold_haptics"))
+			filePath = haptics_path+"/hold_haptics/averaged_haptic_extracted_features.csv";
+		else if (bm.equals("lift_haptics"))
+			filePath = haptics_path+"/lift_haptics/averaged_haptic_extracted_features.csv";
+		//else if (bm.equals("poke_haptics"))
+			//filePath = haptics_path+"/poke_haptics/averaged_haptic_extracted_features.csv";
+		else if (bm.equals("press_haptics"))
+			filePath = haptics_path+"/press_haptics/averaged_haptic_extracted_features.csv";
+		//else if (bm.equals("push_haptics"))
+			//filePath = haptics_path+"/push_haptics/averaged_haptic_extracted_features.csv";
+		//else if (bm.equals("revolve_haptics"))
+			//filePath = haptics_path+"/revolve_haptics/averaged_haptic_extracted_features.csv";
+		//else if (bm.equals("shake_haptics"))
+			//filePath = haptics_path+"/shake_haptics/averaged_haptic_extracted_features.csv";
+		else if (bm.equals("squeeze_haptics"))
+			filePath = haptics_path+"/squeeze_haptics/averaged_haptic_extracted_features.csv";
+		else if (bm.equals("grasp_size"))
+			filePath = size_path+"/averaged_finger_position_vector.csv";
+		else if (bm.equals("look_color"))
+			filePath = color_path+"/averaged_extracted_feature_colour.csv";
+		else if (bm.equals("look_shape"))
+			filePath = shape_path+"/averaged_extracted_feature_fpfh.csv";
+		
+		boolean normalize = false;
+		//if (m.equals("flow"))
+		//	normalize = true;
+		
+		//if (m.equals("surf-vq"))
+		//	normalize = true;
+		
+		ContextFeatureData CD = new ContextFeatureData(bm);
+		CD.loadFromFile(filePath,normalize);
+		
+		return CD;
+	}
+	
 	public ContextFeatureData loadContextData(String bm){
 		String filePath = "";
 		if (bm.equals("drop_audio"))
@@ -200,5 +263,54 @@ public class FeatureDataLoader {
 		return CD;
 	}
 	
-	
+	public String getCurrentDataFilePath(String bm){
+		String filePath = "";
+		if (bm.equals("drop_audio"))
+			filePath = audio_path+"/drop_audio/dft_extracted_features.csv";
+		//else if (bm.equals("grasp_audio"))
+			//filePath = audio_path+"/grasp_audio/dft_extracted_features.csv";
+		//else if (bm.equals("hold_audio"))
+			//filePath = audio_path+"/hold_audio/dft_extracted_features.csv";
+		//else if (bm.equals("lift_audio"))
+			//filePath = audio_path+"/lift_audio/dft_extracted_features.csv";
+		//else if (bm.equals("poke_audio"))
+			//filePath = audio_path+"/poke_audio/dft_extracted_features.csv";
+		//else if (bm.equals("press_audio"))
+			//filePath = audio_path+"/press_audio/dft_extracted_features.csv";
+		else if (bm.equals("push_audio"))
+			filePath = audio_path+"/push_audio/dft_extracted_features.csv";
+		else if (bm.equals("revolve_audio"))
+			filePath = audio_path+"/revolve_audio/dft_extracted_features.csv";
+		else if (bm.equals("shake_audio"))
+			filePath = audio_path+"/shake_audio/dft_extracted_features.csv";
+		//else if (bm.equals("squeeze_audio"))
+			//filePath = audio_path+"/squeeze_audio/dft_extracted_features.csv";
+		//else if (bm.equals("drop_haptics"))
+			//filePath = haptics_path+"/drop_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("grasp_haptics"))
+			//filePath = haptics_path+"/grasp_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("hold_haptics"))
+			filePath = haptics_path+"/hold_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("lift_haptics"))
+			filePath = haptics_path+"/lift_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("poke_haptics"))
+			//filePath = haptics_path+"/poke_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("press_haptics"))
+			filePath = haptics_path+"/press_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("push_haptics"))
+			//filePath = haptics_path+"/push_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("revolve_haptics"))
+			//filePath = haptics_path+"/revolve_haptics/haptic_extracted_features.csv";
+		//else if (bm.equals("shake_haptics"))
+			//filePath = haptics_path+"/shake_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("squeeze_haptics"))
+			filePath = haptics_path+"/squeeze_haptics/haptic_extracted_features.csv";
+		else if (bm.equals("grasp_size"))
+			filePath = size_path+"/finger_position_vector.csv";
+		else if (bm.equals("look_color"))
+			filePath = color_path+"/extracted_feature_colour.csv";
+		else if (bm.equals("look_shape"))
+			filePath = shape_path+"/extracted_feature_fpfh.csv";
+		return filePath;
+	}
 }

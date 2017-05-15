@@ -1,0 +1,275 @@
+		NEW ITERATION: Train on 2 and test on 5 objects
+Train objects: [mac_and_cheese_box, stainless_steel_cannister]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 2
+Question Count: 2
+Mean and variance of single behavior acc:5.217391304347826	7.094320317279406
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.8        0         0         0          ?        metal
+  0         0.25       0         0         0          ?        paper
+  0         0          0         0         0          ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances           0                0      %
+Incorrectly Classified Instances        30              100      %
+Kappa statistic                         -0.0417
+Mean absolute error                      0.488 
+Root mean squared error                  0.6362
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 7 and test on 5 objects
+Train objects: [mac_and_cheese_box, stainless_steel_cannister, red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 3
+Question Count: 3
+Mean and variance of single behavior acc:46.52173913043478	11.698150629525866
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.033      0         0         0          ?        metal
+  0         0.083      0         0         0          ?        paper
+  0.889     0.917      0.593     0.889     0.711      ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          16               53.3333 %
+Incorrectly Classified Instances        14               46.6667 %
+Kappa statistic                         -0.0448
+Mean absolute error                      0.2707
+Root mean squared error                  0.3921
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 8 and test on 5 objects
+Train objects: [mac_and_cheese_box, red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, stainless_steel_cannister, silver_cappuccino_maker]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 4
+Question Count: 4
+Mean and variance of single behavior acc:45.217391304347835	13.514903369517466
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.067      0         0         0          ?        metal
+  0         0          0         0         0          ?        paper
+  1         0.833      0.643     1         0.783      ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          18               60      %
+Incorrectly Classified Instances        12               40      %
+Kappa statistic                          0.0909
+Mean absolute error                      0.2871
+Root mean squared error                  0.4006
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 9 and test on 5 objects
+Train objects: [red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, stainless_steel_cannister, silver_cappuccino_maker, mac_and_cheese_box, dark_blue_sunfounder_box]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 5
+Question Count: 5
+Mean and variance of single behavior acc:47.82608695652174	13.356370085875973
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.067      0         0         0          ?        metal
+  1         0.083      0.75      1         0.857      ?        paper
+  0.889     0.333      0.8       0.889     0.842      ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          22               73.3333 %
+Incorrectly Classified Instances         8               26.6667 %
+Kappa statistic                          0.5122
+Mean absolute error                      0.2671
+Root mean squared error                  0.3604
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 15 and test on 5 objects
+Train objects: [red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, mac_and_cheese_box, dark_blue_sunfounder_box, stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 6
+Question Count: 6
+Mean and variance of single behavior acc:31.8840579710145	12.942221522438878
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.533      0         0         0          ?        metal
+  0.333     0.042      0.667     0.333     0.444      ?        paper
+  0.389     0.333      0.636     0.389     0.483      ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances           9               30      %
+Incorrectly Classified Instances        21               70      %
+Kappa statistic                          0.0789
+Mean absolute error                      0.3355
+Root mean squared error                  0.4389
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 17 and test on 5 objects
+Train objects: [red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, mac_and_cheese_box, dark_blue_sunfounder_box, stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 7
+Question Count: 7
+Mean and variance of single behavior acc:26.81159420289855	13.275566562110104
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.633      0         0         0          ?        metal
+  0.167     0          1         0.167     0.286      ?        paper
+  0.389     0.167      0.778     0.389     0.519      ?        plastic
+  0         0.042      0         0         0          ?        wood
+
+
+Correctly Classified Instances           8               26.6667 %
+Incorrectly Classified Instances        22               73.3333 %
+Kappa statistic                          0.0909
+Mean absolute error                      0.3605
+Root mean squared error                  0.4508
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 18 and test on 5 objects
+Train objects: [red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, mac_and_cheese_box, dark_blue_sunfounder_box, stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box, wooden_cylindrical_container]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 8
+Question Count: 8
+Mean and variance of single behavior acc:29.42028985507246	12.935433050153113
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.633      0         0         0          ?        metal
+  0         0          0         0         0          ?        paper
+  0.389     0.083      0.875     0.389     0.538      ?        plastic
+  0         0.125      0         0         0          ?        wood
+
+
+Correctly Classified Instances           7               23.3333 %
+Incorrectly Classified Instances        23               76.6667 %
+Kappa statistic                          0.065 
+Mean absolute error                      0.3545
+Root mean squared error                  0.4389
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 20 and test on 5 objects
+Train objects: [red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box, wooden_cylindrical_container, mac_and_cheese_box, dark_blue_sunfounder_box, excetrine_medicine_box, blue_salt_can]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 9
+Question Count: 9
+Mean and variance of single behavior acc:29.565217391304337	13.077250963165906
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.567      0         0         0          ?        metal
+  0.667     0.083      0.667     0.667     0.667      ?        paper
+  0.222     0          1         0.222     0.364      ?        plastic
+  0.167     0.083      0.333     0.167     0.222      ?        wood
+
+
+Correctly Classified Instances           9               30      %
+Incorrectly Classified Instances        21               70      %
+Kappa statistic                          0.186 
+Mean absolute error                      0.3395
+Root mean squared error                  0.4216
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 25 and test on 5 objects
+Train objects: [stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box, wooden_cylindrical_container, mac_and_cheese_box, dark_blue_sunfounder_box, excetrine_medicine_box, blue_salt_can, red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, blue_squish_ball, yellow_mustard_bottle, red_ketchup_bottle, dark_green_sports_bottle, yellow_squish_ball]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 10
+Question Count: 10
+Mean and variance of single behavior acc:40.28985507246377	10.195713274212846
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.3        0         0         0          ?        metal
+  0.333     0          1         0.333     0.5        ?        paper
+  0.944     0.167      0.895     0.944     0.919      ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          19               63.3333 %
+Incorrectly Classified Instances        11               36.6667 %
+Kappa statistic                          0.3956
+Mean absolute error                      0.2907
+Root mean squared error                  0.3684
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 26 and test on 5 objects
+Train objects: [stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box, wooden_cylindrical_container, mac_and_cheese_box, dark_blue_sunfounder_box, excetrine_medicine_box, blue_salt_can, red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, blue_squish_ball, yellow_mustard_bottle, red_ketchup_bottle, dark_green_sports_bottle, yellow_squish_ball, yellow_water_bottle]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 12
+Question Count: 12
+Mean and variance of single behavior acc:45.21739130434783	14.100149972571652
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.2        0         0         0          ?        metal
+  0.333     0          1         0.333     0.5        ?        paper
+  1         0.333      0.818     1         0.9        ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          20               66.6667 %
+Incorrectly Classified Instances        10               33.3333 %
+Kappa statistic                          0.3902
+Mean absolute error                      0.2743
+Root mean squared error                  0.3576
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
+		NEW ITERATION: Train on 27 and test on 5 objects
+Train objects: [stainless_steel_cannister, silver_cappuccino_maker, christmas_red_container, tin_can, starbucks_doubleshot_hazelnut, big_red_pop_can, tiny_metallic_can, red_bull_pop_can, wooden_knife_stand, wooden_melon_tea_box, wooden_cylindrical_container, red_tall_cup, green_water_bottle, green_tall_cup, lysol_container, red_water_bottle, blue_squish_ball, yellow_mustard_bottle, red_ketchup_bottle, dark_green_sports_bottle, yellow_squish_ball, yellow_water_bottle, mac_and_cheese_box, dark_blue_sunfounder_box, excetrine_medicine_box, blue_salt_can, regular_creamcheese_box]
+Test objects: [wooden_pepper_grinder, scotch_tape_box, pale_yellow_cup, blue_tall_cup, tennis_container_split_peas]
+Question Count (Not including Skip questions): 13
+Question Count: 13
+Mean and variance of single behavior acc:45.362318840579704	14.796229742085949
+=== Detailed Accuracy By Class ===
+
+TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+  0         0.167      0         0         0          ?        metal
+  0.5       0          1         0.5       0.667      ?        paper
+  1         0.333      0.818     1         0.9        ?        plastic
+  0         0          0         0         0          ?        wood
+
+
+Correctly Classified Instances          21               70      %
+Incorrectly Classified Instances         9               30      %
+Kappa statistic                          0.4444
+Mean absolute error                      0.2691
+Root mean squared error                  0.3472
+Relative absolute error                  0      %
+Root relative squared error              0      %
+Total Number of Instances               30     
+
+
